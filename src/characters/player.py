@@ -1,5 +1,5 @@
 import pygame
-from person import Person
+from characters.person import Person
 from visuals.sprite import Sprite
 
 class Player(Person):
