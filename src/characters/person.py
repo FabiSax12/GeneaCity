@@ -14,5 +14,3 @@ class Person():
 
     def get_info(self):
         return {"id": self.id, "name": self.name, "age": self.age}
-    
-    
