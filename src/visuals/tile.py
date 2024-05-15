@@ -2,8 +2,8 @@ import pygame
 
 class Tile:
     def __init__(self, image: pygame.Surface):
-        self.image = image
-        self.rect = self.image.get_rect()
+        self.__image = image
+        self.__rect = self.__image.get_rect()
 
     def move(self, dx, dy):
         """Move the tile.
@@ -12,29 +12,27 @@ class Tile:
             dx (_type_): difference in x-axis
             dy (_type_): difference in y-axis
         """
-        self.rect.x += dx
-        self.rect.y += dy
+        self.__rect.x += dx
+        self.__rect.y += dy
 
     def draw(self, screen, x, y):
         """Draw the tile."""
-        screen.blit(self.image, (x, y))
+        screen.blit(self.__image, (x, y))
 
-    def get_pos(self):
-        """Get the position of the tile.
+    # Properties
 
-        Returns:
-            tuple: position of the tile
-        """
-        return self.rect.topleft
+    @property
+    def image(self):
+        return self.__image
     
-    def get_perimeter(self):
-        """Get the perimeter of the tile."""
-        return self.rect.topleft, self.rect.bottomright
+    @property
+    def rect(self):
+        return self.__rect
     
-    def get_rect(self) -> pygame.Rect:
-        """Get the rect of the tile.
-
-        Returns:
-            pygame.Rect: rect of the tile
-        """
-        return self.rect
+    @property
+    def pos(self):
+        return self.__rect.topleft
+    
+    @property
+    def perimeter(self):
+        return self.__rect.topleft, self.__rect.bottomright
