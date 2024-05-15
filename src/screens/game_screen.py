@@ -24,7 +24,7 @@ class GameScreen(Screen):
         self.screen_manager.screen.fill(Colors.GRASS.value)
 
         houses_data = self.screen_manager.api.get_houses(self.player.get_pos())
-        self.houses = [ House(house_info) for house_info in houses_data ]
+        self.houses = [ House(house_info, self.screen_manager.screen, self.player.get_pos()) for house_info in houses_data ]
 
     def handle_events(self, events: list[pygame.event.Event]):
         """Handle pygame events.
@@ -56,18 +56,24 @@ class GameScreen(Screen):
 
             if self.player.get_pos()[0] > 0:
                 self.map.move(-horizontal_movement * 300 * self.screen_manager.dt, 0)
+                for house in self.houses:
+                    house.move(-horizontal_movement * 300 * self.screen_manager.dt, 0)
             
         elif horizontal_movement != 0:
             self.player.move(horizontal_movement * 300 * self.screen_manager.dt, 0)
 
             if self.player.get_pos()[0] > 0:
                 self.map.move(-horizontal_movement * 300 * self.screen_manager.dt, 0)
+                for house in self.houses:
+                    house.move(-horizontal_movement * 300 * self.screen_manager.dt, 0)
 
         elif vertical_movement != 0:
             self.player.move(0, vertical_movement * 300 * self.screen_manager.dt)
             
             if self.player.get_pos()[1] > 0:
                 self.map.move(0, -vertical_movement * 300 * self.screen_manager.dt)
+                for house in self.houses:
+                    house.move(0, -vertical_movement * 300 * self.screen_manager.dt)
 
         if keys[pygame.K_ESCAPE]:
             pygame.quit()
@@ -80,8 +86,8 @@ class GameScreen(Screen):
         """Draw screen."""
         self.map.draw()
 
-        # for house in self.houses:
-        #     house.draw(self.screen_manager.screen, self.player.get_pos())
+        for house in self.houses:
+            house.draw()
 
         pos_text = pygame.font.Font(None, 30).render(f"Posición: {int(self.player.get_pos()[0])}, {int(self.player.get_pos()[1])}", True, Colors.WHITE.value)
         self.screen_manager.screen.blit(pos_text, (10, 10))
