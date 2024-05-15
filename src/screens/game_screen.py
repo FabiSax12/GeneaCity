@@ -1,11 +1,11 @@
-import pygame
 import sys
+import pygame
 from clases.map import Map
-from screens.screen import Screen
-from screens.screen_manager import ScreenManager
-from characters.player import Player
+from ui.colors import Colors
 from clases.house import House
-from clases.game import Renderer
+from screens.screen import Screen
+from characters.player import Player
+from screens.screen_manager import ScreenManager
 
 player_mock = {
     "id": 1, 
@@ -19,51 +19,74 @@ class GameScreen(Screen):
     
     def __init__(self, screen_manager: ScreenManager):
         super().__init__(screen_manager)
-        self.map = Map(500, 500)
-        self.player = Player(player_mock, self.screen_manager.get_screen())
-        # self.event_handler = EventHandler()
-        # self.input_handler = InputHandler(self.player)
+        self.map = Map(900, 900, self.screen_manager.screen)
+        self.player = Player(player_mock, self.screen_manager.screen)
+        self.screen_manager.screen.fill(Colors.GRASS.value)
 
         houses_data = self.screen_manager.api.get_houses(self.player.get_pos())
-        self.houses = [House(house_info) for house_info in houses_data]
-        self.renderer = Renderer(self.screen_manager.screen, self.houses)
-
-        self.running = False
+        self.houses = [ House(house_info) for house_info in houses_data ]
 
     def handle_events(self, events: list[pygame.event.Event]):
-        """Handle pygame events."""
+        """Handle pygame events.
+        Args:
+            events (list[pygame.event.Event]): list of pygame events
+        """
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-            # if event.type == pygame.KEYDOWN:
-            #     self.update_houses()
-
-            # self.player.sprite.event_listener(event)
-
     def handle_input(self):
-        """Handle user input."""
+        """Handle input events."""
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]: self.player.move(0, -300 * self.screen_manager.dt)
-        if keys[pygame.K_s]: self.player.move(0, 300 * self.screen_manager.dt)
-        if keys[pygame.K_a]: self.player.move(-300 * self.screen_manager.dt, 0)
-        if keys[pygame.K_d]: self.player.move(300 * self.screen_manager.dt, 0)
-        if keys[pygame.K_ESCAPE]: pygame.quit()
+        horizontal_movement = 0
+        vertical_movement = 0
+
+        if keys[pygame.K_w]:
+            vertical_movement -= 1
+        if keys[pygame.K_s]:
+            vertical_movement += 1
+        if keys[pygame.K_a]:
+            horizontal_movement -= 1
+        if keys[pygame.K_d]:
+            horizontal_movement += 1
+
+        if horizontal_movement != 0 and vertical_movement != 0:
+            self.player.move(horizontal_movement * 300 * self.screen_manager.dt, 0)
+
+            if self.player.get_pos()[0] > 0:
+                self.map.move(-horizontal_movement * 300 * self.screen_manager.dt, 0)
+            
+        elif horizontal_movement != 0:
+            self.player.move(horizontal_movement * 300 * self.screen_manager.dt, 0)
+
+            if self.player.get_pos()[0] > 0:
+                self.map.move(-horizontal_movement * 300 * self.screen_manager.dt, 0)
+
+        elif vertical_movement != 0:
+            self.player.move(0, vertical_movement * 300 * self.screen_manager.dt)
+            
+            if self.player.get_pos()[1] > 0:
+                self.map.move(0, -vertical_movement * 300 * self.screen_manager.dt)
+
+        if keys[pygame.K_ESCAPE]:
+            pygame.quit()
 
     def update(self):
         """Update screen state."""
-        # self.running = not self.event_handler.handle_events()
         self.handle_input()
-        self.renderer.render(self.player)
 
     def draw(self):
         """Draw screen."""
-        # self.screen_manager.screen.fill(Colors.GRASS.value)
-        for house in self.houses:
-            house.draw(self.screen_manager.screen)
+        self.map.draw()
+
+        # for house in self.houses:
+        #     house.draw(self.screen_manager.screen, self.player.get_pos())
+
+        pos_text = pygame.font.Font(None, 30).render(f"Posición: {int(self.player.get_pos()[0])}, {int(self.player.get_pos()[1])}", True, Colors.WHITE.value)
+        self.screen_manager.screen.blit(pos_text, (10, 10))
+
         self.player.draw(self.screen_manager.screen)
-        self.map.draw(self.screen_manager.screen, self.player.get_pos())
 
     def update_houses(self):
         self.screen_manager.api.get_houses(self.player.get_pos())

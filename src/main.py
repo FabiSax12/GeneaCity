@@ -17,6 +17,7 @@ class GameManager:
         """Create a new instance of the GameManager class."""
         if GameManager._instance is not None:
             raise Exception("Only one instance of GameManager is allowed")
+        
         GameManager._instance = self
         self.screen_manager = ScreenManager()
         self.screen_manager.set_screen(WelcomeScreen(self.screen_manager))

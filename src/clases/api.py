@@ -4,8 +4,10 @@ import requests
 class Api:
     def __init__(self, url) -> None:
         self.url = url
+        
         self.houses_result = None
         self.players_result = None
+
         self.houses_event = threading.Event()
         self.players_event = threading.Event()
 
@@ -23,7 +25,6 @@ class Api:
             else:
                 self.houses_result = []
         except Exception as e:
-            print("Error al obtener casas:", e)
             self.houses_result = []
         finally:
             self.houses_event.set()
@@ -42,7 +43,6 @@ class Api:
             else:
                 self.players_result = []
         except Exception as e:
-            print("Error al obtener jugadores:", e)
             self.players_result = []
         finally:
             self.players_event.set()

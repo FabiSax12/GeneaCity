@@ -36,7 +36,7 @@ class Colors(Enum):
     DARK_BROWN = (139, 69, 19)
     TRANSPARENT = (0, 0, 0, 0)
 
-    GRASS = (106, 175, 128)
+    GRASS = (76, 175, 80)
     # DEFAULT = (0, 0, 0)
     # DEFAULT_BACKGROUND = (255, 255, 255)
     # DEFAULT_TEXT = (0, 0, 0)
