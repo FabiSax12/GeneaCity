@@ -1,6 +1,6 @@
 import requests as http
 
-class Api():
+class Api:
     def __init__(self, url) -> None:
         self.url = url
 
@@ -15,5 +15,12 @@ class Api():
         response = http.get(f"{self.url}/getPlayers").json()
         if response["status"] == 1:
             return response["players"]
+        else:
+            return []
+        
+    def get_house_residents(self, house_id: int) -> list[dict]:
+        response = http.get(f"{self.url}/getHousesResidents/?houseId={house_id}").json()
+        if response["status"] == 1:
+            return response["residentes"]
         else:
             return []
