@@ -76,7 +76,7 @@ class Player(Person):
 
     # Properties
     @property
-    def pos(self) -> tuple[int, int]:
+    def pos(self) -> tuple[float, float]:
         """Get the position of the player.
 
         Returns:
