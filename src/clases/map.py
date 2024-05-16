@@ -3,21 +3,21 @@ from visuals.tile import Tile
 
 class Map:
     def __init__(self, width, height, screen: pygame.Surface):
-        self.width = width
-        self.height = height
-        self.screen = screen
+        self.__width = width
+        self.__height = height
+        self.__screen = screen
 
-        self.x = 0
-        self.y = 0
+        self.__x = 0
+        self.__y = 0
 
-        self.tile_size = 100
-        self.tile_image = pygame.image.load("src/assets/tile.png")
-        self.tile_image = pygame.transform.scale(self.tile_image, (self.tile_size, self.tile_size))
+        self.__tile_size = 100
+        self.__tile_image = pygame.image.load("src/assets/tile.png")
+        self.__tile_image = pygame.transform.scale(self.__tile_image, (self.__tile_size, self.__tile_size))
 
-        self.tile_x_amount = self.screen.get_width() // self.tile_size + 2
-        self.tile_y_amount = self.screen.get_height() // self.tile_size + 2
+        self.__tile_x_amount = self.__screen.get_width() // self.__tile_size + 2
+        self.__tile_y_amount = self.__screen.get_height() // self.__tile_size + 2
 
-        self.tiles = [[Tile(self.tile_image) for _ in range(self.tile_x_amount)] for _ in range(self.tile_y_amount)]
+        self.__tiles = [[Tile(self.__tile_image) for _ in range(self.__tile_x_amount)] for _ in range(self.__tile_y_amount)]
 
     def move(self, dx, dy):
         """Move the map.
@@ -26,26 +26,26 @@ class Map:
             dx (_type_): difference in x-axis
             dy (_type_): difference in y-axis
         """
-        if self.x + dx < -100:
-            self.x = 0
-        elif self.x + dx > 0:
-            self.x = -100
+        if self.__x + dx < -100:
+            self.__x = 0
+        elif self.__x + dx > 0:
+            self.__x = -100
         else:
-            self.x += dx
+            self.__x += dx
 
-        if self.y + dy < -100:
-            self.y = 0
-        elif self.y + dy > 0:
-            self.y = -100
+        if self.__y + dy < -100:
+            self.__y = 0
+        elif self.__y + dy > 0:
+            self.__y = -100
         else:
-            self.y += dy
+            self.__y += dy
 
         self.draw()
 
     def draw(self):
         """Draw the map."""
-        for y, row in enumerate(self.tiles):
+        for y, row in enumerate(self.__tiles):
             for x, tile in enumerate(row):
-                tile_x = x * self.tile_size + self.x
-                tile_y = y * self.tile_size + self.y
-                self.screen.blit(tile.image, (tile_x, tile_y))
+                tile_x = x * self.__tile_size + self.__x
+                tile_y = y * self.__tile_size + self.__y
+                self.__screen.blit(tile.image, (tile_x, tile_y))
