@@ -4,7 +4,11 @@ from screens.screen_manager import ScreenManager
 
 class Screen(ABC):
     def __init__(self, screen_manager: ScreenManager):
-        self.screen_manager = screen_manager
+        self.__screen_manager = screen_manager
+
+    @property
+    def screen_manager(self):
+        return self.__screen_manager
 
     @abstractmethod
     def update(self):
