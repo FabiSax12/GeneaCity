@@ -24,7 +24,7 @@ class GameScreen(Screen):
     
     def __init__(self, screen_manager: ScreenManager):
         super().__init__(screen_manager)
-        self.__map = Map(900, 900, self.screen_manager.screen)
+        self.__map = Map(900, 900, self.screen_manager.window)
         self.__player = Player(player_mock)
         self.__dx_counter = 0
         self.__dy_counter = 0
@@ -84,7 +84,7 @@ class GameScreen(Screen):
                 for house in self.__houses:
                     house.move(0, -vertical_movement * 300 * self.screen_manager.dt)
 
-        if abs(self.__dx_counter) >= self.screen_manager.screen.get_height() // 2 or abs(self.__dy_counter) >= self.screen_manager.screen.get_height() // 2:
+        if abs(self.__dx_counter) >= self.screen_manager.window.get_height() // 2 or abs(self.__dy_counter) >= self.screen_manager.window.get_height() // 2:
             self.update_houses()
             self.__dx_counter = 0
             self.__dy_counter = 0
@@ -104,13 +104,13 @@ class GameScreen(Screen):
             house.draw()
 
         pos_text = pygame.font.Font(None, 30).render(f"Posición: {int(self.__player.pos[0])}, {int(self.__player.pos[1])}", True, Colors.WHITE.value)
-        self.screen_manager.screen.blit(pos_text, (10, 10))
+        self.screen_manager.window.blit(pos_text, (10, 10))
 
-        self.__player.draw(self.screen_manager.screen)
+        self.__player.draw(self.screen_manager.window)
 
     def update_houses(self):
         self.screen_manager.api.get_houses(self.__player.pos, self.create_houses)
 
     def create_houses(self, houses_data: list[dict]):
-        self.__houses = [ House(house_info, self.screen_manager.screen, self.__player.pos) for house_info in houses_data ]
+        self.__houses = [ House(house_info, self.screen_manager.window, self.__player.pos) for house_info in houses_data ]
         print("Created houses: ", [house.id for house in self.__houses])

@@ -20,11 +20,11 @@ class GameManager:
         
         GameManager._instance = self
         self.screen_manager = ScreenManager()
-        self.screen_manager.set_screen(WelcomeScreen(self.screen_manager))
+        self.screen_manager.current_screen = WelcomeScreen(self.screen_manager)
 
     def start(self):
         """Start the game."""
-        while self.screen_manager.get_screen() is not None:
+        while self.screen_manager.current_screen is not None:
             self.screen_manager.update()
             self.screen_manager.handle_events(pygame.event.get())
             pygame.display.flip()

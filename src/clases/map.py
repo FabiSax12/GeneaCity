@@ -2,10 +2,10 @@ import pygame
 from visuals.tile import Tile
 
 class Map:
-    def __init__(self, width, height, screen: pygame.Surface):
+    def __init__(self, width, height, window: pygame.Surface):
         self.__width = width
         self.__height = height
-        self.__screen = screen
+        self.__window = window
 
         self.__x = 0
         self.__y = 0
@@ -14,8 +14,8 @@ class Map:
         self.__tile_image = pygame.image.load("src/assets/tile.png")
         self.__tile_image = pygame.transform.scale(self.__tile_image, (self.__tile_size, self.__tile_size))
 
-        self.__tile_x_amount = self.__screen.get_width() // self.__tile_size + 2
-        self.__tile_y_amount = self.__screen.get_height() // self.__tile_size + 2
+        self.__tile_x_amount = self.__window.get_width() // self.__tile_size + 2
+        self.__tile_y_amount = self.__window.get_height() // self.__tile_size + 2
 
         self.__tiles = [[Tile(self.__tile_image) for _ in range(self.__tile_x_amount)] for _ in range(self.__tile_y_amount)]
 
@@ -48,4 +48,4 @@ class Map:
             for x, tile in enumerate(row):
                 tile_x = x * self.__tile_size + self.__x
                 tile_y = y * self.__tile_size + self.__y
-                self.__screen.blit(tile.image, (tile_x, tile_y))
+                self.__window.blit(tile.image, (tile_x, tile_y))
