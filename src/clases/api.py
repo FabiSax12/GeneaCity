@@ -63,7 +63,7 @@ class Api:
         else:
             return []
 
-    def get_available_inhabitants(self, pos: tuple[int, int]) -> list[dict]:
+    def get_available_inhabitants(self, pos: tuple[int, int], callback) -> list[dict]:
         """Get the available inhabitants in a specific position.
 
         Args:
@@ -72,12 +72,12 @@ class Api:
         Returns:
             list[dict]: list of available inhabitants in the position area
         """
-        thread = threading.Thread(target=self.__get_available_inhabitants, args=(pos,), daemon=True, name="getAvailableInhabitants")
+        thread = threading.Thread(target=self.__get_available_inhabitants, args=(pos, callback), daemon=True, name="getAvailableInhabitants")
         thread.start()
         self.__inhabitants_event.wait()
         return self.__inhabitants_result
 
-    def __get_available_inhabitants(self, pos: tuple[float, float]):
+    def __get_available_inhabitants(self, pos: tuple[float, float], callback):
         pos = (int(pos[0]), int(pos[1]))
         try:
             response = requests.get(f"{self.__url}/getAvailableInhabitants/?x={pos[0]}&y={pos[1]}").json()
@@ -89,6 +89,7 @@ class Api:
             self.__inhabitants_result = []
         finally:
             self.__inhabitants_event.set()
+            callback(self.__inhabitants_result)
 
     def select_available_inhabitant(self, inhabitant_id: int) -> bool:
         """Select an available inhabitant to play with.
@@ -99,8 +100,9 @@ class Api:
         Returns:
             dict: selected inhabitant
         """
-        response = requests.get(f"{self.__url}/selectAvailableInhabitant/?id={inhabitant_id}").json()
-        return response["status"] == 1
+        # response = requests.get(f"{self.__url}/selectAvailableInhabitant/?id={inhabitant_id}").json()
+        # return response["status"] == 1
+        print("Selected inhabitant: ", inhabitant_id)
 
     def get_inhabitant_information(self, inhabitant_id: int) -> dict:
         """Get the information of an inhabitant.
