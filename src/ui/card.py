@@ -10,7 +10,7 @@ class Card:
         self.__height = height
 
         self.__selected = False
-        self.__image = pygame.image.load(f"src/assets/spritesheet{character["gender"]}{random.randint(1, 3)}.png")
+        self.__image = pygame.image.load(f"src/assets/spritesheet{character["gender"]}{character["id"] % 3 + 1}.png")
         self.__image.set_clip(pygame.Rect(0, 0, self.__image.get_width() / 4, self.__image.get_height() / 4))
         self.__image = self.__image.subsurface(self.__image.get_clip())
         self.__image = pygame.transform.scale(self.__image, (self.__image.get_width() * 1.5, self.__image.get_height() * 1.5))

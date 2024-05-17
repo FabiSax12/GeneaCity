@@ -2,9 +2,9 @@ import pygame
 from typing import Literal
 
 class Sprite(pygame.sprite.Sprite):
-    def __init__(self, position: tuple[int, int], gender: Literal["Male", "Female"]):
+    def __init__(self, position: tuple[int, int], gender: Literal["Male", "Female"], id: int):
         super().__init__()
-        self.__sheet = pygame.image.load(f"src/assets/spritesheet{gender}3.png")
+        self.__sheet = pygame.image.load(f"src/assets/spritesheet{gender}{id % 3 + 1}.png")
         self.__sprite_width = self.__sheet.get_width() // 4
         self.__sprite_height = self.__sheet.get_height() // 4
 

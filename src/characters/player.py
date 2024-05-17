@@ -8,7 +8,7 @@ class Player(Person):
         self.__score = 0
         self.__position = pygame.Vector2(person_info["house"]["x"], person_info["house"]["y"])
         print(self.info)
-        self.__sprite = Sprite(self.__position, self.info["gender"])
+        self.__sprite = Sprite(self.__position, self.info["gender"], self.info["id"])
 
     def draw(self, map_surface: pygame.Surface):
         """Draw the player on the map.
