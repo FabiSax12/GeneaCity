@@ -75,6 +75,10 @@ class Api(ApiInterface):
         pos = (int(pos[0]), int(pos[1]))
         try:
             response = requests.get(f"{self.__url}/getAvailableInhabitants/?x={pos[0]}&y={pos[1]}").json()
+            for inhabitant in response["inhabitants"]:
+                inhabitant["id"] = int(inhabitant["id"])
+                inhabitant["age"] = int(inhabitant["age"])
+
             if response["status"] == 1:
                 self.__inhabitants_result = response["inhabitants"]
             else:
@@ -110,9 +114,28 @@ class Api(ApiInterface):
         Returns:
             dict: inhabitant information
         """
-        response = requests.get(f"{self.__url}/getInhabitantInformation/?id={inhabitant_id}").json()
-        return response
-    
+        try:
+            response = requests.get(f"{self.__url}/getInhabitantInformation/?id={inhabitant_id}").json()
+
+            if response["status"] == 1:
+                data = response["inhabitant"]
+                data["id"] = int(data["id"])
+                data["age"] = int(data["age"])
+                data["mother"] = int(data["mother"])
+                data["father"] = int(data["father"])
+                data["house"] = {
+                    "id": int(data["house"]),
+                    "x": 250,
+                    "y": 250
+                }
+                return data
+            elif response["status"] == 0:
+                raise ValueError(response["error"])
+            
+            return {}
+        except Exception as e:
+            raise ValueError("An error occurred while getting inhabitant information.")
+
     # Properties
 
     @property

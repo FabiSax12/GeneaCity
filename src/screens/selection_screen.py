@@ -46,14 +46,7 @@ class SelectionScreen:
             response = self.screen_manager.api.select_available_inhabitant(character_id)
             
             if response["status"]:
-                character_response = self.screen_manager.api.get_inhabitant_information(character_id)
-                self.selected_character = character_response["inhabitant"]
-
-                self.selected_character["house"] = {
-                    "id": self.selected_character["house"],
-                    "x": 250,
-                    "y": 250
-                }
+                self.selected_character = self.screen_manager.api.get_inhabitant_information(character_id)
 
     def handle_events(self, events):
         for event in events:
