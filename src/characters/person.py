@@ -57,3 +57,17 @@ class Person():
     @house.setter
     def house(self, new_house):
         self.__house = new_house
+
+    @property
+    def info(self):
+        return {
+            "id": self.__id,
+            "name": self.__name,
+            "gender": self.__gender,
+            "age": self.__age,
+            "marital_status": self.__marital_status,
+            "alive": self.__alive,
+            "father": self.__father,
+            "mother": self.__mother,
+            "house": self.__house
+        }

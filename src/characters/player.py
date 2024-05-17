@@ -7,7 +7,8 @@ class Player(Person):
         super().__init__(person_info)
         self.__score = 0
         self.__position = pygame.Vector2(person_info["house"]["x"], person_info["house"]["y"])
-        self.__sprite = Sprite(self.__position)
+        print(self.info)
+        self.__sprite = Sprite(self.__position, self.info["gender"])
 
     def draw(self, map_surface: pygame.Surface):
         """Draw the player on the map.
@@ -97,12 +98,3 @@ class Player(Person):
             score (int): player's score
         """
         self.__score = score
-
-    @property    
-    def info(self) -> dict:
-        """Get the player's information.
-
-        Returns:
-            dict: player's information
-        """
-        return {"id": self.id, "name": self.name, "age": self.age, "score": self.score, "x": self.__position.x, "y": self.__position.y}
