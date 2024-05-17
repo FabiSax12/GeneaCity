@@ -2,6 +2,19 @@ import pygame
 from screens.screen_manager import ScreenManager
 from screens.welcome_screen import WelcomeScreen
 
+class GameLoop:
+    """Class to handle the game loop."""
+    
+    def __init__(self, screen_manager):
+        self.screen_manager = screen_manager
+    
+    def run(self):
+        """Run the main game loop."""
+        while self.screen_manager.current_screen is not None:
+            self.screen_manager.update()
+            self.screen_manager.handle_events(pygame.event.get())
+            pygame.display.flip()
+
 class GameManager:
     """Class to manage the game."""
     _instance = None
@@ -21,13 +34,11 @@ class GameManager:
         GameManager._instance = self
         self.screen_manager = ScreenManager()
         self.screen_manager.current_screen = WelcomeScreen(self.screen_manager)
+        self.game_loop = GameLoop(self.screen_manager)
 
     def start(self):
         """Start the game."""
-        while self.screen_manager.current_screen is not None:
-            self.screen_manager.update()
-            self.screen_manager.handle_events(pygame.event.get())
-            pygame.display.flip()
+        self.game_loop.run()
 
     def close(self):
         """Close the game."""
@@ -36,3 +47,4 @@ class GameManager:
 if __name__ == "__main__":
     game = GameManager.get_instance()
     game.start()
+
