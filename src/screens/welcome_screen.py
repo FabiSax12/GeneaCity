@@ -1,10 +1,10 @@
 import sys
 import pygame
-from screens.screen import Screen
-from screens.screen_manager import ScreenManager
-from screens.game_screen import GameScreen
 from ui.colors import Colors
-
+from screens.screen import Screen
+from screens.game_screen import GameScreen
+from screens.screen_manager import ScreenManager
+from screens.selection_screen import SelectionScreen
 
 class WelcomeScreen(Screen):
     """Welcome screen class."""
@@ -46,7 +46,8 @@ class WelcomeScreen(Screen):
                     sys.exit()
                 elif event.key == pygame.K_RETURN:
                     if self.selected_option == "new_game":
-                        self.screen_manager.current_screen = GameScreen(self.screen_manager)
+                        # self.screen_manager.current_screen = GameScreen(self.screen_manager)
+                        self.screen_manager.current_screen = SelectionScreen(self.screen_manager)
                     elif self.selected_option == "continue":
                         self.screen_manager.current_screen = GameScreen(self.screen_manager)
 

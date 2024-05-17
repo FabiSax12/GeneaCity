@@ -1,9 +1,9 @@
 import sys
 import pygame
+from typing import Literal
 from ui.card import Card
-from screens.game_screen import GameScreen
 from ui.colors import Colors
-from ui.scrollbar import ScrollBar
+from screens.game_screen import GameScreen
 
 class SelectionScreen:
     def __init__(self, screen_manager):
@@ -15,10 +15,10 @@ class SelectionScreen:
         self.__characters = self.__load_characters()
         self.__selected_card_index = 0
 
-        scrollbar = ScrollBar(self.screen_manager.window.get_height())
+        self.__cards_scroll = 0
 
     def select_character(self):
-        self.screen_manager.api.select_available_inhabitant(self.__cards[self.__selected_card_index].character['id'])
+        self.screen_manager.api.select_available_inhabitant(self.__cards[self.selected_card_index].character['id'])
 
     def handle_events(self, events):
         for event in events:
@@ -28,24 +28,30 @@ class SelectionScreen:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    self.__cards[self.__selected_card_index].select()
+                    self.__cards[self.selected_card_index].select()
                     self.select_character()
                     self.screen_manager.current_screen = GameScreen(self.screen_manager)
                 elif event.key == pygame.K_w:
-                    self.__selected_card_index -= 4
-                elif event.key == pygame.K_s:
-                    self.__selected_card_index += 4
-                elif event.key == pygame.K_a:
-                    self.__selected_card_index -= 1
-                elif event.key == pygame.K_d:
-                    self.__selected_card_index += 1
-                
-                # Ensure the selected index stays within bounds
-                self.__selected_card_index = max(0, min(len(self.__cards)-1, self.__selected_card_index))
+                    if self.selected_card_index >= 4:
+                        self.selected_card_index -= 4
+                        if self.selected_card_index // 4 < self.__cards_scroll:
+                            self.scroll("up")
 
-                # Deselect all cards and then select the current one
+                elif event.key == pygame.K_s:
+                    if self.selected_card_index + 4 < len(self.__cards):
+                        self.selected_card_index += 4
+                        if self.selected_card_index // 4 > self.__cards_scroll + 3:
+                            self.scroll("down")
+
+                elif event.key == pygame.K_a:
+                    if self.selected_card_index % 4 > 0:
+                        self.selected_card_index -= 1
+                elif event.key == pygame.K_d:
+                    if (self.selected_card_index + 1) % 4 != 0 and self.selected_card_index + 1 < len(self.__cards):
+                        self.selected_card_index += 1
+
                 for i, card in enumerate(self.__cards):
-                    if i == self.__selected_card_index:
+                    if i == self.selected_card_index:
                         card.select()
                     else:
                         card.deselect()
@@ -56,14 +62,25 @@ class SelectionScreen:
     def draw(self):
         self.screen_manager.window.fill(Colors.WHITE.value)
         self.screen_manager.window.blit(self.title_text, (self.screen_manager.window.get_width() // 2 - self.title_text.get_width() // 2, 50))
-        for card in self.__cards:
+        start_index = self.__cards_scroll * 4
+        end_index = start_index + 4 * 6
+        for card in self.__cards[start_index:end_index]:
             card.draw()
+
+    def scroll(self, direction: Literal["up", "down"]):
+        if direction == "down" and self.__cards_scroll < (len(self.__cards) - 1) // 4:
+            self.__cards_scroll += 1
+        elif direction == "up" and self.__cards_scroll > 0:
+            self.__cards_scroll -= 1
+
+        dy = 110 if direction == "down" else -110
+        for card in self.__cards:
+            card.position = (card.position[0], card.position[1] - dy)
 
     def __load_characters(self):
         self.screen_manager.api.get_available_inhabitants((10000, 10000), self.__update_cards)
 
     def __update_cards(self, characters_data):
-        # card_width = self.screen_manager.window.get_width() // 2 - 50
         card_width = 150
         card_height = 100
 
@@ -79,3 +96,11 @@ class SelectionScreen:
         ]
 
         self.__cards[0].select()
+
+    @property
+    def selected_card_index(self):
+        return self.__selected_card_index
+    
+    @selected_card_index.setter
+    def selected_card_index(self, value: int):
+        self.__selected_card_index = max(0, min(len(self.__cards) - 1, value))

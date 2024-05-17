@@ -45,5 +45,13 @@ class Card:
         return self.__rect
     
     @property
+    def position(self):
+        return self.__rect.topleft
+    
+    @position.setter
+    def position(self, value: tuple[int, int]):
+        self.__rect.topleft = value
+    
+    @property
     def character(self):
         return self.__character
