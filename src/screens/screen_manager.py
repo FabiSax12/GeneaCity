@@ -1,17 +1,17 @@
 import pygame
-from clases.api import Api
 from ui.colors import Colors
+from interfaces.api_interface import ApiInterface
 
 class ScreenManager:
     """Class to manage game screens."""
 
-    def __init__(self):
+    def __init__(self, api: ApiInterface):
         pygame.init()
         self.__screen = pygame.display.set_mode((800, 800))
         self.__current_screen: pygame.Surface = None
         self.__clock = pygame.time.Clock()
         self.__dt = 0
-        self.__api = Api("https://geneacity.life/API")
+        self.__api = api
         self.__req_timer = 0
     
     def handle_events(self, events: list[pygame.event.Event]):
@@ -31,11 +31,16 @@ class ScreenManager:
 
         if self.__req_timer >= 1:
             self.__req_timer = 0
-            # self.api.get_houses((0, 0))
+            # Use callback to handle asynchronous API response
+            self.__api.get_houses((0, 0), self.handle_houses_response)
 
         if self.__current_screen:
             self.__current_screen.update()
             self.__current_screen.draw()
+
+    def handle_houses_response(self, houses):
+        """Handle the response from the get_houses API call."""
+        pass
 
     # Properties
 

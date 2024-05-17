@@ -1,5 +1,6 @@
 class Person():
     def __init__(self, person_info: dict):
+        print("Creating person: ", person_info)
         self.__id = person_info["id"]
         self.__name = person_info["name"]
         self.__gender = person_info["gender"]

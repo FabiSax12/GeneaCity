@@ -1,9 +1,6 @@
 import random
 import pygame
 from .colors import Colors
-from visuals.sprite import Sprite
-
-# Define colors
 
 class Card:
     def __init__(self, window: pygame.Surface, width: int, height: int, x, y, character: dict):
