@@ -7,15 +7,15 @@ from screens.screen_manager import ScreenManager
 from screens.selection_screen import SelectionScreen
 
 player_mock = {
-    "id": "5",
+    "id": 5,
     "name": "Cannon",
     "gender": "Male",
-    "age": "27",
+    "age": 27,
     "marital_status": "Single",
     "alive": "Alive",
-    "father": "0",
-    "mother": "1",
-    "house": {"x": 250, "y": 250}
+    "father": 0,
+    "mother": 1,
+    "house": {"id": 2, "x": 250, "y": 250}
 }
 
 class WelcomeScreen(Screen):
