@@ -4,9 +4,10 @@ from ui.card import Card
 from ui.colors import Colors
 from typing import Literal, List, Dict
 from screens.game_screen import GameScreen
+from screens.screen_manager import ScreenManager
 
 class SelectionScreen:
-    def __init__(self, screen_manager):
+    def __init__(self, screen_manager: ScreenManager):
         self.screen_manager = screen_manager
         self.font = pygame.font.SysFont("Arial", 25)
         self.title_text = self.font.render("Personajes disponibles", True, Colors.BLACK.value)

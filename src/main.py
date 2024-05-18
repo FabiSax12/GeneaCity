@@ -6,7 +6,7 @@ from screens.welcome_screen import WelcomeScreen
 class GameLoop:
     """Class to handle the game loop."""
     
-    def __init__(self, screen_manager):
+    def __init__(self, screen_manager: ScreenManager):
         self.screen_manager = screen_manager
     
     def run(self):

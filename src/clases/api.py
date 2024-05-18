@@ -1,26 +1,29 @@
 import requests
 import threading
+from types.house import House
+from types.inhabitant import AvailableInhabitant, Inhabitant
 from typing import Tuple, Callable, List, Dict
 from interfaces.api_interface import ApiInterface
+from types.resident import Resident
 
 class Api(ApiInterface):
     def __init__(self, url: str) -> None:
         self.__url = url
         
-        self.__houses_result = None
-        self.__inhabitants_result = None
+        self.__houses_result: List[House] = None
+        self.__inhabitants_result: List[Inhabitant] = None
 
         self.__houses_event = threading.Event()
         self.__inhabitants_event = threading.Event()
 
-    def get_houses(self, pos: Tuple[float, float], callback: Callable) -> List[Dict]:
+    def get_houses(self, pos: Tuple[float, float], callback: Callable) -> List[House]:
         """Get the houses in a specific position.
 
         Args:
             pos (tuple[float, float]): position to get the houses
 
         Returns:
-            list[dict]: list of houses in the position area
+            list[House]: list of houses in the position area
         """
         pos = (int(pos[0]), int(pos[1]))
         thread = threading.Thread(target=self.__get_houses, args=(pos, callback), daemon=True, name="getHouses")
@@ -42,14 +45,14 @@ class Api(ApiInterface):
             self.__houses_event.set()
             callback(self.__houses_result)
 
-    def get_house_residents(self, house_id: int) -> List[Dict]:
+    def get_house_residents(self, house_id: int) -> List[Resident]:
         """Get the residents of a house.
 
         Args:
             house_id (int): house id to get the residents
 
         Returns:
-            list[dict]: list of residents in the house
+            list[Resident]: list of residents in the house
         """
         response = requests.get(f"{self.__url}/getHousesResidents/?houseId={house_id}").json()
         if response["status"] == 1:
@@ -57,14 +60,14 @@ class Api(ApiInterface):
         else:
             return []
 
-    def get_available_inhabitants(self, pos: Tuple[int, int], callback: Callable) -> List[Dict]:
+    def get_available_inhabitants(self, pos: Tuple[int, int], callback: Callable) -> List[AvailableInhabitant]:
         """Get the available inhabitants in a specific position.
 
         Args:
             pos (tuple[int, int]): position to get the available inhabitants
 
         Returns:
-            list[dict]: list of available inhabitants in the position area
+            list[AvailableInhabitant]: list of available inhabitants in the position area
         """
         thread = threading.Thread(target=self.__get_available_inhabitants, args=(pos, callback), daemon=True, name="getAvailableInhabitants")
         thread.start()
@@ -105,14 +108,14 @@ class Api(ApiInterface):
             "status": True
         }  # Simulate successful selection
 
-    def get_inhabitant_information(self, inhabitant_id: int) -> Dict:
+    def get_inhabitant_information(self, inhabitant_id: int) -> Inhabitant:
         """Get the information of an inhabitant.
 
         Args:
             inhabitant_id (int): inhabitant id to get the information
 
         Returns:
-            dict: inhabitant information
+            Inhabitant: inhabitant information
         """
         try:
             response = requests.get(f"{self.__url}/getInhabitantInformation/?id={inhabitant_id}").json()
