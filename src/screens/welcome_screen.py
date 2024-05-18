@@ -26,12 +26,13 @@ class WelcomeScreen(Screen):
 
     def __init__(self, screen_manager: ScreenManager):
         super().__init__(screen_manager)
+        self.selected_option = WelcomeScreen.NEW_GAME_OPTION
         self.font = pygame.font.SysFont("Arial", 30)
         self.title_text = pygame.font.SysFont("Arial", 60).render("GeneaCity", True, Colors.BLACK.value)
         self.subtitle_text = pygame.font.SysFont("Arial", 28).render("El juego de la vida", True, Colors.BLACK.value)
 
-        self.new_game_text = self.font.render("Nueva Partida", True, Colors.BLACK.value)
-        self.continue_text = self.font.render("Continuar Partida", True, Colors.BLACK.value)
+        self.new_game_text = self.font.render("Nueva Partida", True, Colors.LIGHT_BLUE.value if self.selected_option == WelcomeScreen.NEW_GAME_OPTION else Colors.BLACK.value)
+        self.continue_text = self.font.render("Continuar Partida", True,  Colors.BLACK.value if self.selected_option == WelcomeScreen.NEW_GAME_OPTION else Colors.LIGHT_BLUE.value)
 
         self.title_rect = self.title_text.get_rect(center=(screen_manager.window.get_width() // 2, 50))
         self.subtitle_rect = self.subtitle_text.get_rect(center=(screen_manager.window.get_width() // 2, 50 + self.title_text.get_height()))
@@ -101,6 +102,8 @@ class WelcomeScreen(Screen):
     def highlight_selected_option(self):
         """Highlight the selected option."""
         if self.selected_option == WelcomeScreen.NEW_GAME_OPTION:
-            pygame.draw.rect(self.screen_manager.window, Colors.BLACK.value, self.new_game_rect, 2)
+            self.new_game_text = self.font.render("Nueva Partida", True, Colors.LIGHT_BLUE.value)
+            self.continue_text = self.font.render("Continuar Partida", True, Colors.BLACK.value)
         elif self.selected_option == WelcomeScreen.CONTINUE_OPTION:
-            pygame.draw.rect(self.screen_manager.window, Colors.BLACK.value, self.continue_rect, 2)
+            self.new_game_text = self.font.render("Nueva Partida", True, Colors.BLACK.value)
+            self.continue_text = self.font.render("Continuar Partida", True, Colors.LIGHT_BLUE.value)
