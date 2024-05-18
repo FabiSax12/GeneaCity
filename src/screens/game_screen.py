@@ -106,7 +106,15 @@ class GameScreen(Screen):
             house.draw()
 
         pos_text = pygame.font.Font(None, 30).render(f"Posición: {int(self.__player.pos[0])}, {int(self.__player.pos[1])}", True, Colors.WHITE.value)
+        name_text = pygame.font.Font(None, 30).render(f"Nombre: {self.__player.name}", True, Colors.WHITE.value)
+        age_text = pygame.font.Font(None, 30).render(f"Edad: {self.__player.age}", True, Colors.WHITE.value)
+        score_text = pygame.font.Font(None, 30).render(f"Puntuación: {self.__player.score}", True, Colors.WHITE.value)
+        
         self.screen_manager.window.blit(pos_text, (10, 10))
+        self.screen_manager.window.blit(name_text, (10, 40))
+        self.screen_manager.window.blit(age_text, (10, 70))
+        self.screen_manager.window.blit(score_text, (10, 100))
+
         self.__player.draw(self.screen_manager.window)
 
     def update_houses(self):

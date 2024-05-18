@@ -1,10 +1,10 @@
 import requests
 import threading
-from types.house import House
-from types.inhabitant import AvailableInhabitant, Inhabitant
 from typing import Tuple, Callable, List, Dict
 from interfaces.api_interface import ApiInterface
-from types.resident import Resident
+from type.house import House
+from type.inhabitant import AvailableInhabitant, Inhabitant
+from type.resident import Resident
 
 class Api(ApiInterface):
     def __init__(self, url: str) -> None:

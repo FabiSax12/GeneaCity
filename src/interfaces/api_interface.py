@@ -1,9 +1,9 @@
 # api_interface.py
 from typing import List, Dict, Tuple, Callable
 
-from types.house import House
-from types.inhabitant import AvailableInhabitant, Inhabitant
-from types.resident import Resident
+from type.house import House
+from type.inhabitant import AvailableInhabitant, Inhabitant
+from type.resident import Resident
 
 class ApiInterface:
     def get_houses(self, pos: Tuple[float, float], callback: Callable) -> List[House]:

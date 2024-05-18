@@ -1,4 +1,4 @@
-from types.house import House
+from type.house import House
 from typing import Literal, TypedDict
 
 class AvailableInhabitant(TypedDict):
