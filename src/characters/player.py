@@ -1,14 +1,16 @@
 import pygame
-from characters.person import Person
+from typing import List
 from visuals.sprite import Sprite
+from characters.person import Person
+from screens.screen_manager import ScreenManager
 
 class Player(Person):
-    def __init__(self, person_info: dict):
+    def __init__(self, person_info: dict, screen_manager: ScreenManager):
         super().__init__(person_info)
         self.__score = 0
         self.__position = pygame.Vector2(person_info["house"]["x"], person_info["house"]["y"])
-        print(self.info)
         self.__sprite = Sprite(self.__position, self.info["gender"], self.info["id"])
+        self.__screen_manager = screen_manager
 
     def draw(self, map_surface: pygame.Surface):
         """Draw the player on the map.
@@ -74,6 +76,18 @@ class Player(Person):
             self.__score = 0
         else:
             self.__score -= points
+
+    def interact(self, houses: list):
+        """Interact with houses if player is near.
+
+        Args:
+            houses (list): List of house objects to interact with
+        """
+        for house in houses:
+            if self.__position.distance_to((house.position[0], house.position[1])) < 50:
+                residents = self.__screen_manager.api.get_house_residents(house.id)
+                print(self.__position, house.position)
+                print("Residents:", residents)
 
     # Properties
     @property
