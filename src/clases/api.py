@@ -1,6 +1,6 @@
 import requests
 import threading
-from typing import Tuple, Callable, List, Dict
+from typing import Tuple, Callable, List
 from interfaces.api_interface import ApiInterface
 from type.house import House
 from type.inhabitant import AvailableInhabitant, Inhabitant

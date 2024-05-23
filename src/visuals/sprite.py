@@ -65,6 +65,10 @@ class Sprite(pygame.sprite.Sprite):
     @property
     def image(self) -> pygame.Surface:
         return self.__image
+    
+    @property
+    def rect(self) -> pygame.Rect:
+        return self.__rect
 
     @property
     def direction(self) -> str:

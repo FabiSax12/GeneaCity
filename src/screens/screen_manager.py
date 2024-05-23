@@ -1,17 +1,20 @@
 import pygame
 from ui.colors import Colors
 from interfaces.api_interface import ApiInterface
+from clases.game_data import GameData
 
 class ScreenManager:
     """Class to manage game screens."""
 
-    def __init__(self, api: ApiInterface):
+    def __init__(self, api: ApiInterface, game_data_manager: GameData):
         pygame.init()
         self.__screen = pygame.display.set_mode((800, 800))
         self.__current_screen: pygame.Surface = None
+        self.__previous_screen: pygame.Surface = None
         self.__clock = pygame.time.Clock()
         self.__dt = 0
         self.__api = api
+        self.__game_data_manager = game_data_manager
         self.__req_timer = 0
     
     def handle_events(self, events: list[pygame.event.Event]):
@@ -52,7 +55,13 @@ class ScreenManager:
     @current_screen.setter
     def current_screen(self, screen):
         """Set the screen."""
+        self.__previous_screen = self.__current_screen
         self.__current_screen = screen
+
+    @property
+    def previous_screen(self):
+        """Get the screen."""
+        return self.__previous_screen
 
     @property
     def window(self):
@@ -63,6 +72,11 @@ class ScreenManager:
     def api(self):
         """Get the api."""
         return self.__api
+    
+    @property
+    def game_data(self):
+        """Get the game data."""
+        return self.__game_data_manager
     
     @property
     def dt(self):

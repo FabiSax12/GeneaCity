@@ -84,6 +84,6 @@ class GameDataManager(GameData):
         if self.os:
             return os.path.expanduser("~/Documents/Geneacity/game_history.json")
         else:
-            return None
+            return None 
         
     
