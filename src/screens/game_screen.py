@@ -1,11 +1,12 @@
 import sys
 import pygame
 from clases.map import Map
-from screens.pause_screen import PauseScreen
 from ui.colors import Colors
 from clases.house import House
+from ui.text import TextRenderer
 from screens.screen import Screen
 from characters.player import Player
+from screens.pause_screen import PauseScreen
 from screens.screen_manager import ScreenManager
 
 class GameScreen(Screen):
@@ -18,6 +19,7 @@ class GameScreen(Screen):
         self.__dx_counter = 0
         self.__dy_counter = 0
         self.__houses = []
+        self.text_renderer = TextRenderer("src/assets/fonts/PressStart2P-Regular.ttf")
         self.update_houses()
 
     def handle_events(self, events: list[pygame.event.Event]):
@@ -43,37 +45,15 @@ class GameScreen(Screen):
             horizontal_movement += 1
 
         if horizontal_movement != 0 and vertical_movement != 0:
-            self.__player.move(horizontal_movement * 300 * self.screen_manager.dt, 0)
-
-            self.__dx_counter += horizontal_movement * 300 * self.screen_manager.dt
-
-            if self.__player.pos[0] > 0:
-                self.__map.move(-horizontal_movement * 300 * self.screen_manager.dt, 0)
-                for house in self.__houses:
-                    house.move(-horizontal_movement * 300 * self.screen_manager.dt, 0)
+            self.move_player(horizontal_movement * 300 * self.screen_manager.dt, 0)
             
         elif horizontal_movement != 0:
-            self.__player.move(horizontal_movement * 300 * self.screen_manager.dt, 0)
-            self.__dx_counter += horizontal_movement * 300 * self.screen_manager.dt
-
-            if self.__player.pos[0] > 0:
-                self.__map.move(-horizontal_movement * 300 * self.screen_manager.dt, 0)
-                for house in self.__houses:
-                    house.move(-horizontal_movement * 300 * self.screen_manager.dt, 0)
+            self.move_player(horizontal_movement * 300 * self.screen_manager.dt, 0)
 
         elif vertical_movement != 0:
-            self.__player.move(0, vertical_movement * 300 * self.screen_manager.dt)
-            self.__dy_counter += vertical_movement * 300 * self.screen_manager.dt
-            
-            if self.__player.pos[1] > 0:
-                self.__map.move(0, -vertical_movement * 300 * self.screen_manager.dt)
-                for house in self.__houses:
-                    house.move(0, -vertical_movement * 300 * self.screen_manager.dt)
+            self.move_player(0, vertical_movement * 300 * self.screen_manager.dt)
 
-        if abs(self.__dx_counter) >= self.screen_manager.window.get_height() // 2 or abs(self.__dy_counter) >= self.screen_manager.window.get_height() // 2:
-            self.update_houses()
-            self.__dx_counter = 0
-            self.__dy_counter = 0
+        self.check_map_update()
 
         if keys[pygame.K_e]:
             self.__player.interact(self.__houses)
@@ -109,16 +89,15 @@ class GameScreen(Screen):
         for house in self.__houses:
             house.draw()
 
-        font = pygame.font.Font(None, 24)
-        pos_text = font.render(f"Posición: {int(self.__player.pos[0])}, {int(self.__player.pos[1])}", True, Colors.WHITE.value)
-        name_text = font.render(f"Nombre: {self.__player.name}", True, Colors.WHITE.value)
-        age_text = font.render(f"Edad: {self.__player.age}", True, Colors.WHITE.value)
-        score_text = font.render(f"Puntuación: {self.__player.score}", True, Colors.WHITE.value)
-        
-        self.screen_manager.window.blit(pos_text, (10, 10))
-        self.screen_manager.window.blit(name_text, (10, 40))
-        self.screen_manager.window.blit(age_text, (10, 70))
-        self.screen_manager.window.blit(score_text, (10, 100))
+        pos_text, pos_rect = self.text_renderer.render_text_with_outline(f"Posición: {int(self.__player.pos[0])}, {int(self.__player.pos[1])}", "default", ("topleft", (10, 10)))
+        name_text, name_rect = self.text_renderer.render_text_with_outline(f"Nombre: {self.__player.name}", "default", ("topleft", (10, 40)))
+        age_text, age_rect = self.text_renderer.render_text_with_outline(f"Edad: {self.__player.age}", "default", ("topleft", (10, 70)))
+        score_text, score_rect = self.text_renderer.render_text_with_outline(f"Puntuación: {self.__player.score}", "default", ("topleft", (10, 100)))
+
+        self.screen_manager.window.blit(pos_text, pos_rect)
+        self.screen_manager.window.blit(name_text, name_rect)
+        self.screen_manager.window.blit(age_text, age_rect)
+        self.screen_manager.window.blit(score_text, score_rect)
 
         self.__player.draw(self.screen_manager.window)
 
@@ -129,4 +108,3 @@ class GameScreen(Screen):
     def create_houses(self, houses_data: list[dict]):
         """Create house objects from data."""
         self.__houses = [House(house_info, self.screen_manager.window, self.__player.pos) for house_info in houses_data]
-

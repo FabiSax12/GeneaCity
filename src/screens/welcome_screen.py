@@ -34,8 +34,8 @@ class WelcomeScreen(Screen):
         self.text_renderer = TextRenderer("src/assets/fonts/PressStart2P-Regular.ttf")
         self.image_handler = ImageHandler()
 
-        self.title_text, self.title_rect = self.text_renderer.render_text_with_outline("GeneaCity", "title", screen_manager.window.get_width() // 2, 150)
-        self.subtitle_text, self.subtitle_rect = self.text_renderer.render_text_with_outline("El juego de la vida", "subtitle", screen_manager.window.get_width() // 2, 150 + self.title_text.get_height())
+        self.title_text, self.title_rect = self.text_renderer.render_text_with_outline("GeneaCity", "title", ("center", (screen_manager.window.get_width() // 2, 150)))
+        self.subtitle_text, self.subtitle_rect = self.text_renderer.render_text_with_outline("El juego de la vida", "subtitle", ("center", (screen_manager.window.get_width() // 2, 150 + self.title_text.get_height())))
 
         self.image, self.image_rect = self.image_handler.load_and_scale_image("src/assets/images/GeneaCity.png", 75, 75, 20 + screen_manager.window.get_width() // 2 + self.title_text.get_width() // 2, 150)
 
