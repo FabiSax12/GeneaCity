@@ -1,10 +1,13 @@
 import sys
 import pygame
+from ui.button import Button
 from ui.colors import Colors
 from screens.screen import Screen
 from screens.game_screen import GameScreen
 from screens.screen_manager import ScreenManager
 from screens.selection_screen import SelectionScreen
+from ui.image import ImageHandler
+from ui.text import TextRenderer
 
 player_mock = {
     "id": 5,
@@ -27,50 +30,50 @@ class WelcomeScreen(Screen):
     def __init__(self, screen_manager: ScreenManager):
         super().__init__(screen_manager)
         self.selected_option = WelcomeScreen.NEW_GAME_OPTION
-        self.font = pygame.font.SysFont("Arial", 30)
-        self.title_text = pygame.font.SysFont("Arial", 60).render("GeneaCity", True, Colors.BLACK.value)
-        self.subtitle_text = pygame.font.SysFont("Arial", 28).render("El juego de la vida", True, Colors.BLACK.value)
 
-        self.new_game_text = self.font.render("Nueva Partida", True, Colors.LIGHT_BLUE.value if self.selected_option == WelcomeScreen.NEW_GAME_OPTION else Colors.BLACK.value)
-        self.continue_text = self.font.render("Continuar Partida", True,  Colors.BLACK.value if self.selected_option == WelcomeScreen.NEW_GAME_OPTION else Colors.LIGHT_BLUE.value)
+        self.text_renderer = TextRenderer("src/assets/fonts/PressStart2P-Regular.ttf")
+        self.image_handler = ImageHandler()
 
-        self.title_rect = self.title_text.get_rect(center=(screen_manager.window.get_width() // 2, 50))
-        self.subtitle_rect = self.subtitle_text.get_rect(center=(screen_manager.window.get_width() // 2, 50 + self.title_text.get_height()))
-        self.new_game_rect = self.new_game_text.get_rect(center=(screen_manager.window.get_width() // 2, screen_manager.window.get_height() // 2))
-        self.continue_rect = self.continue_text.get_rect(center=(screen_manager.window.get_width() // 2, screen_manager.window.get_height() // 2 + 50))
+        self.title_text, self.title_rect = self.text_renderer.render_text_with_outline("GeneaCity", "title", screen_manager.window.get_width() // 2, 150)
+        self.subtitle_text, self.subtitle_rect = self.text_renderer.render_text_with_outline("El juego de la vida", "subtitle", screen_manager.window.get_width() // 2, 150 + self.title_text.get_height())
 
-        self.image = pygame.image.load("src/assets/GeneaCity.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (75, 75))
-        self.image_rect = self.image.get_rect(x=20 + screen_manager.window.get_width() // 2 + self.title_text.get_width() // 2, centery=50)
+        self.image, self.image_rect = self.image_handler.load_and_scale_image("src/assets/images/GeneaCity.png", 75, 75, 20 + screen_manager.window.get_width() // 2 + self.title_text.get_width() // 2, 150)
 
-        self.selected_option = WelcomeScreen.NEW_GAME_OPTION
+        self.background_image, self.background_image_rect = self.image_handler.load_and_prepare_background("src/assets/images/welcome_screen_bg.webp", screen_manager.window.get_width(), screen_manager.window.get_height())
+
+        self.new_game_button = Button(
+            text="Nueva Partida",
+            position=(screen_manager.window.get_width() // 2 - 100, screen_manager.window.get_height() // 2),
+            on_click=self.start_new_game,
+            bg_color=(0, 122, 204),
+            text_color=(255, 255, 255),
+            hover_bg_color=(0, 162, 255),
+        )
+
+        self.continue_button = Button(
+            text="Continuar Partida",
+            position=(screen_manager.window.get_width() // 2 - 100, screen_manager.window.get_height() // 2 + 60),
+            on_click=self.continue_game,
+            bg_color=(0, 122, 204),
+            text_color=(255, 255, 255),
+            hover_bg_color=(0, 162, 255),
+        )
 
     def handle_events(self, events: list[pygame.event.Event]):
         """Handle pygame events."""
         for event in events:
             if event.type == pygame.QUIT:
                 self.quit_game()
-                
-            if event.type == pygame.KEYDOWN:
-                self.handle_keydown(event.key)
+            self.new_game_button.handle_event(event)
+            self.continue_button.handle_event(event)
 
-    def handle_keydown(self, key: int):
-        """Handle keydown events."""
-        if key in (pygame.K_w, pygame.K_UP):
-            self.selected_option = WelcomeScreen.NEW_GAME_OPTION
-        elif key in (pygame.K_s, pygame.K_DOWN):
-            self.selected_option = WelcomeScreen.CONTINUE_OPTION
-        elif key == pygame.K_ESCAPE:
-            self.quit_game()
-        elif key == pygame.K_RETURN:
-            self.select_option()
+    def start_new_game(self):
+        """Start a new game."""
+        self.screen_manager.current_screen = SelectionScreen(self.screen_manager)
 
-    def select_option(self):
-        """Select the current option."""
-        if self.selected_option == WelcomeScreen.NEW_GAME_OPTION:
-            self.screen_manager.current_screen = SelectionScreen(self.screen_manager)
-        elif self.selected_option == WelcomeScreen.CONTINUE_OPTION:
-            self.screen_manager.current_screen = GameScreen(self.screen_manager, player_mock)
+    def continue_game(self):
+        """Continue the game."""
+        self.screen_manager.current_screen = GameScreen(self.screen_manager, player_mock)
 
     def quit_game(self):
         """Quit the game."""
@@ -84,26 +87,18 @@ class WelcomeScreen(Screen):
     def draw(self):
         """Draw screen."""
         self.screen_manager.window.fill(Colors.WHITE.value)
-        self.draw_texts()
         self.draw_image()
-        self.highlight_selected_option()
+        self.draw_texts()
+        self.new_game_button.draw(self.screen_manager.window)
+        self.continue_button.draw(self.screen_manager.window)
 
     def draw_texts(self):
         """Draw the texts on the screen."""
         self.screen_manager.window.blit(self.title_text, self.title_rect)
         self.screen_manager.window.blit(self.subtitle_text, self.subtitle_rect)
-        self.screen_manager.window.blit(self.new_game_text, self.new_game_rect)
-        self.screen_manager.window.blit(self.continue_text, self.continue_rect)
 
     def draw_image(self):
         """Draw the image on the screen."""
+        self.screen_manager.window.blit(self.background_image, self.background_image_rect)
         self.screen_manager.window.blit(self.image, self.image_rect)
-
-    def highlight_selected_option(self):
-        """Highlight the selected option."""
-        if self.selected_option == WelcomeScreen.NEW_GAME_OPTION:
-            self.new_game_text = self.font.render("Nueva Partida", True, Colors.LIGHT_BLUE.value)
-            self.continue_text = self.font.render("Continuar Partida", True, Colors.BLACK.value)
-        elif self.selected_option == WelcomeScreen.CONTINUE_OPTION:
-            self.new_game_text = self.font.render("Nueva Partida", True, Colors.BLACK.value)
-            self.continue_text = self.font.render("Continuar Partida", True, Colors.LIGHT_BLUE.value)
+        
