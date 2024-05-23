@@ -53,7 +53,7 @@ class Map:
     def __init__(self, size: Tuple[int, int], window: pygame.Surface):
         self.__width = size[0]
         self.__height = size[1]
-        self.__renderer = MapRenderer(window, 100, pygame.image.load("src/assets/tile.png"))
+        self.__renderer = MapRenderer(window, 100, pygame.image.load("src/assets/images/tile.png"))
 
     def move(self, dx, dy):
         """Move the map.

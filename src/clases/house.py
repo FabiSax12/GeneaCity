@@ -10,7 +10,7 @@ class House:
         self.__y = int(house_info["y"]) - player_pos[1] + self.__window.get_height() // 2
         self.__occupants = house_info["occupants"]
 
-        self.__image = pygame.image.load("src/assets/house_1.png")
+        self.__image = pygame.image.load("src/assets/images/house_1.png")
         self.__image = pygame.transform.scale(self.__image, (50, 50))
         self.__rect = self.__image.get_rect()
         self.__rect.topleft = (self.__x, self.__y)

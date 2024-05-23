@@ -8,6 +8,8 @@ class ScreenManager:
 
     def __init__(self, api: ApiInterface, game_data_manager: GameData):
         pygame.init()
+        pygame.display.set_caption("GeneaCity")
+        pygame.display.set_icon(pygame.image.load("src/assets/images/GeneaCity.png"))
         self.__screen = pygame.display.set_mode((800, 800))
         self.__current_screen: pygame.Surface = None
         self.__previous_screen: pygame.Surface = None
