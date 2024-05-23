@@ -1,5 +1,6 @@
 import pygame
 from clases.api import Api
+from clases.game_data import GameDataManager
 from screens.screen_manager import ScreenManager
 from screens.welcome_screen import WelcomeScreen
 
@@ -33,7 +34,8 @@ class GameManager:
             raise Exception("Only one instance of GameManager is allowed")
         
         GameManager._instance = self
-        self.screen_manager = ScreenManager(Api("https://geneacity.life/API"))
+        game_data_manager = GameDataManager()
+        self.screen_manager = ScreenManager(Api("https://geneacity.life/API"), game_data_manager)
         self.screen_manager.current_screen = WelcomeScreen(self.screen_manager)
         self.game_loop = GameLoop(self.screen_manager)
 
