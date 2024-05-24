@@ -5,6 +5,7 @@ class TextRenderer:
     """Class to handle text rendering with outline."""
     
     def __init__(self, font_path: str):
+        pygame.font.init()
         self.fonts = {
             "title": pygame.font.Font(font_path, 55),
             "subtitle": pygame.font.Font(font_path, 25),
