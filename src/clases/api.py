@@ -1,6 +1,6 @@
 import requests
 import threading
-from typing import Tuple, Callable, List
+from typing import Literal, Tuple, Callable, List
 from interfaces.api_interface import ApiInterface
 from type.house import House
 from type.inhabitant import AvailableInhabitant, Inhabitant
@@ -138,6 +138,42 @@ class Api(ApiInterface):
             return {}
         except Exception as e:
             raise ValueError("An error occurred while getting inhabitant information.")
+        
+    def marry_inhabitants(self, inhabitant1_id: int, inhabitant2_id: int, newHouseXPostition: int, newHouseYPostition: int) -> bool:
+        """Marry two inhabitants.
+
+        Args:
+            inhabitant1_id (int): inhabitant 1 id
+            inhabitant2_id (int): inhabitant 2 id
+
+        Returns:
+            bool: True if the inhabitants were married, False otherwise
+        """
+        response = requests.get(f"{self.__url}/createInhabitantUnion/?idInhabitant1={inhabitant1_id}&idInhabitant2={inhabitant2_id}&newHouseXPostition={newHouseXPostition}&newHouseYPostition={newHouseYPostition}").json()
+
+        if response["status"] == 0 and response["error"]:
+            raise ValueError(response["error"])
+
+        return response["status"] == 1
+    
+    def create_children(self, name: str, parent_id: int, gender: Literal['Male'] | Literal['Female'], age: int = None) -> bool:
+        """Create children for a married couple.
+
+        Args:
+            name (str): child name
+            parent_id (int): parent id
+            gender (str): gender of the child
+            age (int): age of the child
+        """
+        if age is None:
+            age = 0
+
+        response = requests.get(f"{self.__url}/createChildren/?name={name}&idInhabitant={parent_id}&gender={gender}&age={age}").json()
+
+        if response["status"] == 0 and response["error"]:
+            raise ValueError(response["error"])
+
+        return response["status"] == 1
 
     # Properties
 
