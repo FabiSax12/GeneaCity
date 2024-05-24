@@ -3,6 +3,8 @@ from clases.api import Api
 from clases.game_data import GameDataManager
 from screens.screen_manager import ScreenManager
 from screens.welcome_screen import WelcomeScreen
+from ui.image import ImageHandler
+from ui.text import TextRenderer
 
 class GameLoop:
     """Class to handle the game loop."""
@@ -35,8 +37,10 @@ class GameManager:
         
         GameManager._instance = self
         game_data_manager = GameDataManager()
-        self.screen_manager = ScreenManager(Api("https://geneacity.life/API"), game_data_manager)
-        self.screen_manager.current_screen = WelcomeScreen(self.screen_manager)
+        api = Api("https://geneacity.life/API")
+        text_renderer = TextRenderer("src/assets/fonts/PressStart2P-Regular.ttf")
+        image_handler = ImageHandler()
+        self.screen_manager = ScreenManager(api, game_data_manager, text_renderer, image_handler, WelcomeScreen)
         self.game_loop = GameLoop(self.screen_manager)
 
     def start(self):
