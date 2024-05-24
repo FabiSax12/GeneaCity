@@ -16,14 +16,17 @@ class PauseScreen(Screen):
         ]
 
     def _resume(self):
-        self.__screen_manager.current_screen = self.__screen_manager.previous_screen
+        del self.__screen_manager.overlay_screen
 
     def _save_and_quit(self):
         # new_game_data = None
         # self.__screen_manager.game_data.save(new_game_data)
 
         from screens.welcome_screen import WelcomeScreen
+        
+        del self.__screen_manager.overlay_screen
         self.__screen_manager.current_screen = WelcomeScreen(self.__screen_manager)
+
 
     def handle_events(self, events: list[pygame.event.Event]):
         for event in events:
@@ -38,16 +41,8 @@ class PauseScreen(Screen):
 
     def draw(self):
         window = self.__screen_manager.window
-
-        # Fondo semitransparente
-        overlay = pygame.Surface(window.get_size(), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 128))  # RGBA: 128 es el nivel de transparencia
-        window.blit(overlay, (0, 0))
-
-        # Cuadro blanco en el centro
         white_rect = pygame.Rect(150, 150, 500, 500)
         pygame.draw.rect(window, Colors.WHITE.value, white_rect)
-
-        # Dibujar botones
+        
         for button in self.__buttons:
             button.draw(window)

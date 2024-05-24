@@ -19,7 +19,7 @@ class GameScreen(Screen):
         self.__dx_counter = 0
         self.__dy_counter = 0
         self.__houses = []
-        self.text_renderer = TextRenderer("src/assets/fonts/PressStart2P-Regular.ttf")
+        self.text_renderer = screen_manager.text_renderer
         self.update_houses()
 
     def handle_events(self, events: list[pygame.event.Event]):
@@ -59,7 +59,7 @@ class GameScreen(Screen):
             self.__player.interact(self.__houses)
 
         if keys[pygame.K_ESCAPE]:
-            self.screen_manager.current_screen = PauseScreen(self.screen_manager)
+            self.screen_manager.overlay_screen = PauseScreen(self.screen_manager)
 
     def move_player(self, horizontal_movement: float, vertical_movement: float):
         """Move the player and the map."""
