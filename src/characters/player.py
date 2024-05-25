@@ -1,8 +1,8 @@
 import pygame
-from typing import List
 from visuals.sprite import Sprite
 from characters.person import Person
 from screens.screen_manager import ScreenManager
+from ui.residents_display import ResidentsOverlay
 
 class Player(Person):
     def __init__(self, person_info: dict, screen_manager: ScreenManager):
@@ -11,6 +11,8 @@ class Player(Person):
         self.__position = pygame.Vector2(person_info["house"]["x"], person_info["house"]["y"])
         self.__sprite = Sprite(self.__position, self.info["gender"], self.info["id"])
         self.__screen_manager = screen_manager
+
+        self.__screen_manager.game_data.data = person_info 
 
     def draw(self, map_surface: pygame.Surface):
         """Draw the player on the map.
@@ -86,8 +88,8 @@ class Player(Person):
         for house in houses:
             if self.__position.distance_to((house.position[0], house.position[1])) < 50:
                 residents = self.__screen_manager.api.get_house_residents(house.id)
-                print(self.__position, house.position)
-                print("Residents:", residents)
+                residents_display = ResidentsOverlay(residents, self.__screen_manager)
+                self.__screen_manager.overlay_screen = residents_display
 
     # Properties
     @property

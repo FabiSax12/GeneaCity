@@ -9,18 +9,6 @@ from screens.selection_screen import SelectionScreen
 from ui.image import ImageHandler
 from ui.text import TextRenderer
 
-player_mock = {
-    "id": 5,
-    "name": "Cannon",
-    "gender": "Male",
-    "age": 27,
-    "marital_status": "Single",
-    "alive": "Alive",
-    "father": 0,
-    "mother": 1,
-    "house": {"id": 2, "x": 250, "y": 250}
-}
-
 class WelcomeScreen(Screen):
     """Welcome screen class."""
     
@@ -69,11 +57,14 @@ class WelcomeScreen(Screen):
 
     def start_new_game(self):
         """Start a new game."""
+        self.screen_manager.game_mode = WelcomeScreen.NEW_GAME_OPTION
         self.screen_manager.current_screen = SelectionScreen(self.screen_manager)
 
     def continue_game(self):
         """Continue the game."""
-        self.screen_manager.current_screen = GameScreen(self.screen_manager, player_mock)
+        game_data = self.screen_manager.game_data.load_last_game()
+        if game_data is None: return
+        self.screen_manager.current_screen = GameScreen(self.screen_manager, game_data)
 
     def quit_game(self):
         """Quit the game."""

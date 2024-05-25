@@ -5,7 +5,6 @@ from ui.colors import Colors
 from screens.screen import Screen
 from screens.screen_manager import ScreenManager
 
-
 class PauseScreen(Screen):
     def __init__(self, screen_manager: ScreenManager):
         super().__init__(screen_manager)
@@ -19,8 +18,7 @@ class PauseScreen(Screen):
         del self.__screen_manager.overlay_screen
 
     def _save_and_quit(self):
-        # new_game_data = None
-        # self.__screen_manager.game_data.save(new_game_data)
+        self.__screen_manager.game_data.save()
 
         from screens.welcome_screen import WelcomeScreen
         

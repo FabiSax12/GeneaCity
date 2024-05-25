@@ -1,16 +1,16 @@
 import sys
 import pygame
-from typing import Type
+from typing import Literal, Type
 from ui.colors import Colors
 from ui.text import TextRenderer
 from ui.image import ImageHandler
-from clases.game_data import GameData
+from clases.game_data import GameDataManager
 from interfaces.api_interface import ApiInterface
 
 class ScreenManager:
     """Class to manage game screens."""
 
-    def __init__(self, api: ApiInterface, game_data_manager: GameData, text_renderer: TextRenderer, image_handler: ImageHandler, initial_screen_cls: Type[pygame.Surface], window_size: tuple[int, int] = (800, 800)):
+    def __init__(self, api: ApiInterface, game_data_manager: GameDataManager, text_renderer: TextRenderer, image_handler: ImageHandler, initial_screen_cls: Type[pygame.Surface], window_size: tuple[int, int] = (800, 800)):
         pygame.init()
         pygame.display.set_caption("GeneaCity")
         pygame.display.set_icon(pygame.image.load("src/assets/images/GeneaCity.png"))
@@ -26,6 +26,7 @@ class ScreenManager:
         self.__text_renderer = text_renderer
         self.__image_handler = image_handler
         self.__req_timer = 0
+        self.__game_mode: Literal["new_game", "continue"] = None
 
     def handle_events(self, events: list[pygame.event.Event]):
         """Handle pygame events."""
@@ -124,18 +125,13 @@ class ScreenManager:
     def image_handler(self):
         """Get the image handler."""
         return self.__image_handler
-
-    def start(self):
-        """Start the screen manager loop."""
-        self.current_screen = self.__initial_screen_cls(self)
-        running = True
-        while running:
-            events = pygame.event.get()
-            for event in events:
-                if event.type == pygame.QUIT:
-                    running = False
-            self.handle_events(events)
-            self.update()
-            pygame.display.flip()
-        pygame.quit()
-        sys.exit()
+    
+    @property
+    def game_mode(self):
+        """Get the game mode."""
+        return self.__game_mode
+    
+    @game_mode.setter
+    def game_mode(self, mode: Literal["new", "old"]):
+        """Set the game mode."""
+        self.__game_mode = mode

@@ -25,14 +25,6 @@ class House:
     def draw(self):
         self.__window.blit(self.__image, self.__rect.topleft)
 
-    def interact(self, player: Player):
-        """Interaction logic when player interacts with the house.
-
-        Args:
-            player (Player): The player object
-        """
-        
-
     # Properties
 
     @property
