@@ -67,3 +67,12 @@ class Map:
     def draw(self):
         """Draw the map."""
         self.__renderer.draw()
+
+    @property
+    def width(self):
+        return self.__width
+    
+    @property
+    def height(self):
+        return self.__height
+    

@@ -40,6 +40,8 @@ class Player(Person):
         """
         direction = "right" if dx > 0 else "left" if dx < 0 else "down" if dy > 0 else "up" if dy < 0 else self.__sprite._direction
         self.__sprite.direction = direction
+
+        print(self.__position.x, self.__position.y, dx, dy)
         
         if self.__position.x + dx < 0:
             self.__position.x = 0

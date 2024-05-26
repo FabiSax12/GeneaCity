@@ -1,9 +1,7 @@
 import sys
 import pygame
 from clases.map import Map
-from ui.colors import Colors
 from clases.house import House
-from ui.text import TextRenderer
 from screens.screen import Screen
 from characters.player import Player
 from screens.pause_screen import PauseScreen
@@ -35,13 +33,13 @@ class GameScreen(Screen):
         horizontal_movement = 0
         vertical_movement = 0
 
-        if keys[pygame.K_w]:
+        if keys[pygame.K_w] and self.__player.pos[1] > 0:
             vertical_movement -= 1
-        if keys[pygame.K_s]:
+        if keys[pygame.K_s] and self.__player.pos[1] < self.__map.height:
             vertical_movement += 1
-        if keys[pygame.K_a]:
+        if keys[pygame.K_a] and self.__player.pos[0] > 0:
             horizontal_movement -= 1
-        if keys[pygame.K_d]:
+        if keys[pygame.K_d] and self.__player.pos[0] < self.__map.width:
             horizontal_movement += 1
 
         if horizontal_movement != 0 and vertical_movement != 0:
@@ -71,6 +69,7 @@ class GameScreen(Screen):
             self.__map.move(-horizontal_movement, -vertical_movement)
             for house in self.__houses:
                 house.move(-horizontal_movement, -vertical_movement)
+        
 
     def check_map_update(self):
         """Check if the map needs to be updated with new houses."""
