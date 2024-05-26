@@ -131,6 +131,10 @@ class Api(ApiInterface):
                     "x": 250,
                     "y": 250
                 }
+                data["position"] = {
+                    "x": 250,
+                    "y": 250
+                }
                 return data
             elif response["status"] == 0:
                 raise ValueError(response["error"])

@@ -62,7 +62,7 @@ class SelectionScreen:
             self.cards[self.selected_card_index].select()
             self.select_character()
             self.screen_manager.current_screen = GameScreen(self.screen_manager, self.selected_character)
-            self.screen_manager.game_data.data = self.selected_character
+            # self.screen_manager.game_data.data = self.selected_character
         elif key == pygame.K_w:
             self.move_selection_vertical(-4)
         elif key == pygame.K_s:

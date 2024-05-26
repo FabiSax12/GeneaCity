@@ -8,11 +8,14 @@ class Player(Person):
     def __init__(self, person_info: dict, screen_manager: ScreenManager):
         super().__init__(person_info)
         self.__score = 0
-        self.__position = pygame.Vector2(person_info["house"]["x"], person_info["house"]["y"])
+        self.__position = pygame.Vector2(person_info["position"]["x"], person_info["position"]["y"])
         self.__sprite = Sprite(self.__position, self.info["gender"], self.info["id"])
         self.__screen_manager = screen_manager
 
-        self.__screen_manager.game_data.data = person_info 
+        self.__screen_manager.game_data.data = {
+            "id": person_info["id"],
+            "position": person_info["position"]
+        }
 
     def draw(self, map_surface: pygame.Surface):
         """Draw the player on the map.
@@ -54,6 +57,8 @@ class Player(Person):
             self.__position.y += dy
             self.__sprite.update()
 
+        self.__save_position()
+
     def increase_score(self, points: int):
         """Increase the player's score.
 
@@ -90,6 +95,13 @@ class Player(Person):
                 residents = self.__screen_manager.api.get_house_residents(house.id)
                 residents_display = ResidentsOverlay(residents, self.__screen_manager)
                 self.__screen_manager.overlay_screen = residents_display
+
+    def __save_position(self):
+        """Save the player's position to the game data."""
+        self.__screen_manager.game_data.data["position"] = {
+            "x": int(self.__position.x),
+            "y": int(self.__position.y)
+        }
 
     # Properties
     @property
