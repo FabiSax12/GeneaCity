@@ -32,6 +32,9 @@ class HistoryScreen(Screen):
 
         self.history_data = screen_manager.game_data.load()
 
+        if self.history_data == []:
+            return
+
         self.grid_layout = GridLayout(
             card_width=400, 
             card_height=100, 
@@ -59,7 +62,12 @@ class HistoryScreen(Screen):
         self.screen_manager.window.blit(self.background_image, self.background_image_rect)
         self.screen_manager.window.blit(self.title_text, self.title_rect)
         self.back_button.draw(self.screen_manager.window)
-        self.grid_layout.draw(self.screen_manager.window)
+
+        if self.history_data:
+            self.grid_layout.draw(self.screen_manager.window)
+        else:
+            text, rect = self.text_renderer.render_text_with_outline("No hay historial de partidas", "normal", ("center", (self.screen_manager.window.get_width() // 2, 300)))
+            self.screen_manager.window.blit(text, rect)
 
     def go_back(self):
         self.screen_manager.current_screen = self.screen_manager.previous_screen

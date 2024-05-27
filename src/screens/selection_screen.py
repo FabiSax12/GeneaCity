@@ -38,6 +38,7 @@ class SelectionScreen:
                 self.selected_character = self.screen_manager.api.get_inhabitant_information(character_id)
 
     def handle_events(self, events):
+        self.grid_layout.handle_events(events)
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()

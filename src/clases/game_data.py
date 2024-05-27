@@ -109,7 +109,6 @@ class GameDataManager:
         """
         Saves the game data to the JSON file.
         """
-        print(new_data)
         self.__data = new_data
 
 
