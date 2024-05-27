@@ -1,5 +1,6 @@
 import sys
 import pygame
+from screens.history_screen import HistoryScreen
 from ui.button import Button
 from ui.colors import Colors
 from screens.screen import Screen
@@ -47,6 +48,15 @@ class WelcomeScreen(Screen):
             hover_bg_color=(0, 162, 255),
         )
 
+        self.history_button = Button(
+            text="Historial",
+            position=(screen_manager.window.get_width() // 2 - 100, screen_manager.window.get_height() // 2 + 120),
+            on_click=self.show_history,
+            bg_color=(0, 122, 204),
+            text_color=(255, 255, 255),
+            hover_bg_color=(0, 162, 255),
+        )
+
     def handle_events(self, events: list[pygame.event.Event]):
         """Handle pygame events."""
         for event in events:
@@ -54,6 +64,7 @@ class WelcomeScreen(Screen):
                 self.quit_game()
             self.new_game_button.handle_event(event)
             self.continue_button.handle_event(event)
+            self.history_button.handle_event(event)
 
     def start_new_game(self):
         """Start a new game."""
@@ -83,6 +94,10 @@ class WelcomeScreen(Screen):
         self.screen_manager.game_data.data = response
         self.screen_manager.current_screen = GameScreen(self.screen_manager, response)
 
+    def show_history(self):
+        """Show the history screen."""
+        self.screen_manager.current_screen = HistoryScreen(self.screen_manager)
+
     def quit_game(self):
         """Quit the game."""
         pygame.quit()
@@ -99,6 +114,7 @@ class WelcomeScreen(Screen):
         self.draw_texts()
         self.new_game_button.draw(self.screen_manager.window)
         self.continue_button.draw(self.screen_manager.window)
+        self.history_button.draw(self.screen_manager.window)
 
     def draw_texts(self):
         """Draw the texts on the screen."""

@@ -40,3 +40,10 @@ class TextRenderer:
             text_rect.bottomright = pos[1]
 
         return text_surface, text_rect
+    
+    def render_text(self, text: str, font_key: str, pos: Tuple[int, int], text_color=(255, 255, 255)) -> Tuple[pygame.Surface, pygame.Rect]:
+        font = self.fonts.get(font_key, self.fonts["default"])
+        text_surface = font.render(text, True, text_color)
+        text_rect = text_surface.get_rect()
+        text_rect.topleft = pos
+        return text_surface, text_rect
