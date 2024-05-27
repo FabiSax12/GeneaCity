@@ -79,13 +79,6 @@ class WelcomeScreen(Screen):
 
         response = self.screen_manager.api.get_inhabitant_information(game_data["id"])
 
-        # Get house position by id when the endpoit is available
-        response["house"] = {
-            "id": response["house"],
-            "x": 250,
-            "y": 250,
-        }
-
         response["position"] = {
             "x": game_data["position"]["x"],
             "y": game_data["position"]["y"]

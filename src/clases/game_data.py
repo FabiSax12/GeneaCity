@@ -1,9 +1,6 @@
 import json
 import os
 
-import os
-import json
-
 class GameDataManager:
     """
     Class for managing game data from a JSON file.
@@ -112,7 +109,9 @@ class GameDataManager:
         """
         Saves the game data to the JSON file.
         """
+        print(new_data)
         self.__data = new_data
+
 
     @data.deleter
     def data(self):

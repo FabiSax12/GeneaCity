@@ -1,11 +1,13 @@
 import sys
+from turtle import pos
 import pygame
 from ui.button import Button
+from ui.card import GameCard
 from ui.text import TextRenderer
 from ui.image import ImageHandler
 from screens.screen import Screen
+from ui.grid_layout import GridLayout
 from screens.screen_manager import ScreenManager
-from ui.game_card import GameCard
 
 class HistoryScreen(Screen):
     """History screen class."""
@@ -21,7 +23,7 @@ class HistoryScreen(Screen):
 
         self.back_button = Button(
             text="Volver",
-            position=(screen_manager.window.get_width() // 2 - 100, screen_manager.window.get_height() // 2 + 120),
+            position=(screen_manager.window.get_width() // 2 - 100, screen_manager.window.get_height() * (4/5)),
             on_click=self.go_back,
             bg_color=(0, 122, 204),
             text_color=(255, 255, 255),
@@ -30,22 +32,24 @@ class HistoryScreen(Screen):
 
         self.history_data = screen_manager.game_data.load()
 
-        self.__cards = [
-            GameCard(
-                screen_manager,
-                data,
-                (
-                    screen_manager.window.get_width() // 2 - 200,
-                    200 + i * 110
-                )
-            ) 
-            for i, data in enumerate(self.history_data)
-        ]
-            
+        self.grid_layout = GridLayout(
+            card_width=400, 
+            card_height=100, 
+            columns=1, 
+            card_factory=self.create_game_card,
+            position=(screen_manager.window.get_width() // 2 - 200, 200)
+        )
+        self.grid_layout.update_cards(self.screen_manager.window, self.history_data)
+
+    def create_game_card(self, window, width, height, x, y, game):
+        return GameCard(window, width, height, x, y, game)
+
     def handle_events(self, events: list[pygame.event.Event]):
         for event in events:
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                self.grid_layout.handle_keydown(event.key)
             self.back_button.handle_event(event)
 
     def update(self):
@@ -55,9 +59,7 @@ class HistoryScreen(Screen):
         self.screen_manager.window.blit(self.background_image, self.background_image_rect)
         self.screen_manager.window.blit(self.title_text, self.title_rect)
         self.back_button.draw(self.screen_manager.window)
-
-        for card in self.__cards:
-            card.draw()
+        self.grid_layout.draw(self.screen_manager.window)
 
     def go_back(self):
         self.screen_manager.current_screen = self.screen_manager.previous_screen

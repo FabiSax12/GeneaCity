@@ -12,10 +12,8 @@ class Player(Person):
         self.__sprite = Sprite(self.__position, self.info["gender"], self.info["id"])
         self.__screen_manager = screen_manager
 
-        self.__screen_manager.game_data.data = {
-            "id": person_info["id"],
-            "position": person_info["position"]
-        }
+        person_info["score"] = self.__score
+        self.__screen_manager.game_data.data = person_info
 
     def draw(self, map_surface: pygame.Surface):
         """Draw the player on the map.
