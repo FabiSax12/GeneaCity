@@ -1,5 +1,6 @@
 import sys
 import pygame
+from screens.instructions_screen import InstructionsScreen
 from ui.colors import Colors
 from typing import List, Dict
 from ui.card import CharacterCard
@@ -50,6 +51,7 @@ class SelectionScreen:
             self.grid_layout.cards[self.grid_layout.selected_card_index].select()
             self.select_character()
             self.screen_manager.current_screen = GameScreen(self.screen_manager, self.selected_character)
+            self.screen_manager.overlay_screen = InstructionsScreen(self.screen_manager)
 
     def update(self):
         pass

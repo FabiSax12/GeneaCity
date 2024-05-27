@@ -1,6 +1,7 @@
 import sys
 import pygame
 from screens.history_screen import HistoryScreen
+from screens.instructions_screen import InstructionsScreen
 from ui.button import Button
 from ui.colors import Colors
 from screens.screen import Screen
@@ -86,6 +87,7 @@ class WelcomeScreen(Screen):
 
         self.screen_manager.game_data.data = response
         self.screen_manager.current_screen = GameScreen(self.screen_manager, response)
+        self.screen_manager.overlay_screen = InstructionsScreen(self.screen_manager)
 
     def show_history(self):
         """Show the history screen."""

@@ -65,7 +65,3 @@ class Button:
         screen.blit(shadow_surface, shadow_rect.topleft)
         
         screen.blit(self.text_surface, self.text_rect)
-    
-    def update(self):
-        """Update the button state if necessary."""
-        pass
