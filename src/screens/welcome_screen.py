@@ -21,7 +21,7 @@ class WelcomeScreen(Screen):
         super().__init__(screen_manager)
         self.selected_option = WelcomeScreen.NEW_GAME_OPTION
 
-        self.text_renderer = TextRenderer("src/assets/fonts/PressStart2P-Regular.ttf")
+        self.text_renderer = TextRenderer("PressStart2P-Regular.ttf")
         self.image_handler = ImageHandler()
 
         self.title_text, self.title_rect = self.text_renderer.render_text_with_outline("GeneaCity", "title", ("center", (screen_manager.window.get_width() // 2, 150)))

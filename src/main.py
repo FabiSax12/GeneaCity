@@ -8,10 +8,10 @@ from ui.text import TextRenderer
 
 class GameLoop:
     """Class to handle the game loop."""
-    
+
     def __init__(self, screen_manager: ScreenManager):
         self.screen_manager = screen_manager
-    
+
     def run(self):
         """Run the main game loop."""
         while self.screen_manager.current_screen is not None:
@@ -38,7 +38,7 @@ class GameManager:
         GameManager._instance = self
         game_data_manager = GameDataManager()
         api = Api("https://geneacity.life/API")
-        text_renderer = TextRenderer("src/assets/fonts/PressStart2P-Regular.ttf")
+        text_renderer = TextRenderer("PressStart2P-Regular.ttf")
         image_handler = ImageHandler()
         self.screen_manager = ScreenManager(api, game_data_manager, text_renderer, image_handler, WelcomeScreen)
         self.game_loop = GameLoop(self.screen_manager)

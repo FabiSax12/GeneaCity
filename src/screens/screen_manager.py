@@ -1,7 +1,6 @@
-import sys
 import pygame
-from typing import Literal, Type
 from ui.colors import Colors
+from typing import Literal, Type
 from ui.text import TextRenderer
 from ui.image import ImageHandler
 from clases.game_data import GameDataManager

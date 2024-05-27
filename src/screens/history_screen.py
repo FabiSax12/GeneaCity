@@ -15,7 +15,7 @@ class HistoryScreen(Screen):
     def __init__(self, screen_manager: ScreenManager):
         super().__init__(screen_manager)
 
-        self.text_renderer = TextRenderer("src/assets/fonts/PressStart2P-Regular.ttf")
+        self.text_renderer = TextRenderer("PressStart2P-Regular.ttf")
         self.image_handler = ImageHandler()
 
         self.title_text, self.title_rect = self.text_renderer.render_text_with_outline("Historial", "title", ("center", (screen_manager.window.get_width() // 2, 150)))
