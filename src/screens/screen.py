@@ -1,9 +1,9 @@
 import pygame
 from abc import ABC, abstractmethod
-from screens.screen_manager import ScreenManager
+from interfaces.screen_manager import ScreenManagerInterface
 
 class Screen(ABC):
-    def __init__(self, screen_manager: ScreenManager):
+    def __init__(self, screen_manager: ScreenManagerInterface):
         self._screen_manager = screen_manager
 
     @property

@@ -1,31 +1,34 @@
 import pygame
-from ui.colors import Colors
-from typing import Literal, Type
+from typing import Type
+from screens.screen import Screen
+from interfaces.api_interface import ApiInterface
+from clases.game_data import GameDataManager
 from ui.text import TextRenderer
 from ui.image import ImageHandler
-from clases.game_data import GameDataManager
-from interfaces.api_interface import ApiInterface
+from interfaces.screen_manager import ScreenManagerInterface
 
-class ScreenManager:
+class ScreenManager(ScreenManagerInterface):
     """Class to manage game screens."""
 
-    def __init__(self, api: ApiInterface, game_data_manager: GameDataManager, text_renderer: TextRenderer, image_handler: ImageHandler, initial_screen_cls: Type[pygame.Surface], window_size: tuple[int, int] = (800, 800)):
+    def __init__(self, api: ApiInterface, game_data_manager: GameDataManager, text_renderer: TextRenderer, image_handler: ImageHandler, initial_screen_cls: Type[Screen], window_size: tuple[int, int] = (800, 800)):
         pygame.init()
         pygame.display.set_caption("GeneaCity")
         pygame.display.set_icon(pygame.image.load("src/assets/images/GeneaCity.png"))
         self.__screen = pygame.display.set_mode(window_size)
+        self.__text_renderer = text_renderer
+        self.__image_handler = image_handler
         self.__initial_screen_cls = initial_screen_cls
-        self.__current_screen: pygame.Surface = self.__initial_screen_cls(self)
-        self.__previous_screen: pygame.Surface = None
-        self.__overlay_screen: pygame.Surface = None
+        self.__current_screen: Screen = self.__initial_screen_cls(self)
+        self.__previous_screen: Screen = None
+        self.__overlay_screen: Screen = None
         self.__clock = pygame.time.Clock()
         self.__dt = 0
         self.__api = api
         self.__game_data_manager = game_data_manager
-        self.__text_renderer = text_renderer
-        self.__image_handler = image_handler
         self.__req_timer = 0
-        self.__game_mode: Literal["new_game", "continue"] = None
+        self.__game_mode: str = None
+
+        print(self.__text_renderer)
 
     def handle_events(self, events: list[pygame.event.Event]):
         """Handle pygame events."""
@@ -38,7 +41,7 @@ class ScreenManager:
         """Update the screen manager."""
         self.__dt = self.__clock.tick(100) / 1000.0
         self.__req_timer += 0.005
-        self.__screen.fill(Colors.GRASS.value)
+        self.__screen.fill((0, 0, 0))  # Fill screen with black color
 
         if self.__req_timer >= 1:
             self.__req_timer = 0
@@ -52,8 +55,7 @@ class ScreenManager:
 
         if self.__overlay_screen:
             shadow = pygame.Surface(self.__screen.get_size(), pygame.SRCALPHA)
-            shadow.fill(Colors.BLACK.value)
-            shadow.set_alpha(128)
+            shadow.fill((0, 0, 0, 128))  # Black shadow with transparency
             self.__screen.blit(shadow, (0, 0))
             self.__overlay_screen.update()
             self.__overlay_screen.draw()
@@ -62,15 +64,13 @@ class ScreenManager:
         """Handle the response from the get_houses API call."""
         pass
 
-    # Properties
-
     @property
     def current_screen(self):
         """Get the current screen."""
         return self.__current_screen
     
     @current_screen.setter
-    def current_screen(self, screen):
+    def current_screen(self, screen: Screen):
         """Set the current screen."""
         self.__previous_screen = self.__current_screen
         self.__current_screen = screen
@@ -86,7 +86,7 @@ class ScreenManager:
         return self.__overlay_screen
     
     @overlay_screen.setter
-    def overlay_screen(self, screen):
+    def overlay_screen(self, screen: Screen):
         """Set the overlay screen."""
         self.__overlay_screen = screen
 
@@ -131,6 +131,6 @@ class ScreenManager:
         return self.__game_mode
     
     @game_mode.setter
-    def game_mode(self, mode: Literal["new", "old"]):
+    def game_mode(self, mode: str):
         """Set the game mode."""
         self.__game_mode = mode

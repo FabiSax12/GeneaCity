@@ -35,11 +35,7 @@ class GridLayout:
             self.cards[0].select()
 
     def handle_events(self, events):
-        print("Grid events:")
         for event in events:
-            if event.type == pygame.KEYDOWN:
-                self.handle_keydown(event.key)
-
             if self.card_type:
                 if issubclass(self.card_type, ActionableCard):
                     for card in self.cards:

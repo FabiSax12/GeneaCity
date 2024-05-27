@@ -6,11 +6,11 @@ from typing import List, Dict
 from ui.card import CharacterCard
 from ui.grid_layout import GridLayout
 from screens.game_screen import GameScreen
-from screens.screen_manager import ScreenManager
+from screens.screen import Screen
 
-class SelectionScreen:
-    def __init__(self, screen_manager: ScreenManager):
-        self.screen_manager = screen_manager
+class SelectionScreen(Screen):
+    def __init__(self, screen_manager):
+        super().__init__(screen_manager)
         self.font = pygame.font.SysFont("Arial", 25)
         self.title_text = self.font.render("Personajes disponibles", True, Colors.BLACK.value)
         self.characters = []
@@ -29,9 +29,8 @@ class SelectionScreen:
         self.grid_layout.update_cards(self.screen_manager.window, characters)
 
     def select_character(self):
-        character_id = self.grid_layout.cards[self.grid_layout.selected_card_index].character['id']
-
         if self.grid_layout.cards:
+            character_id = self.grid_layout.cards[self.grid_layout.selected_card_index].character['id']
             response = self.screen_manager.api.select_available_inhabitant(character_id)
             
             if response["status"]:
@@ -51,7 +50,7 @@ class SelectionScreen:
         if key == pygame.K_RETURN:
             self.grid_layout.cards[self.grid_layout.selected_card_index].select()
             self.select_character()
-            self.screen_manager.current_screen = GameScreen(self.screen_manager, self.selected_character)
+            self.screen_manager.set_state(GameScreen(self.screen_manager, self.selected_character))
             self.screen_manager.overlay_screen = InstructionsScreen(self.screen_manager)
 
     def update(self):

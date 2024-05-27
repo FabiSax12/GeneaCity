@@ -1,28 +1,26 @@
 import sys
 import pygame
-from screens.history_screen import HistoryScreen
-from screens.instructions_screen import InstructionsScreen
 from ui.button import Button
 from ui.colors import Colors
 from screens.screen import Screen
-from screens.game_screen import GameScreen
-from screens.screen_manager import ScreenManager
+from screens.history_screen import HistoryScreen
+from screens.instructions_screen import InstructionsScreen
 from screens.selection_screen import SelectionScreen
-from ui.image import ImageHandler
-from ui.text import TextRenderer
+from screens.game_screen import GameScreen
+from interfaces.screen_manager import ScreenManagerInterface
 
 class WelcomeScreen(Screen):
     """Welcome screen class."""
-    
+
     NEW_GAME_OPTION = "new_game"
     CONTINUE_OPTION = "continue"
 
-    def __init__(self, screen_manager: ScreenManager):
+    def __init__(self, screen_manager: ScreenManagerInterface):
         super().__init__(screen_manager)
         self.selected_option = WelcomeScreen.NEW_GAME_OPTION
 
-        self.text_renderer = TextRenderer("PressStart2P-Regular.ttf")
-        self.image_handler = ImageHandler()
+        self.text_renderer = screen_manager.text_renderer
+        self.image_handler = screen_manager.image_handler
 
         self.title_text, self.title_rect = self.text_renderer.render_text_with_outline("GeneaCity", "title", ("center", (screen_manager.window.get_width() // 2, 150)))
         self.subtitle_text, self.subtitle_rect = self.text_renderer.render_text_with_outline("El juego de la vida", "subtitle", ("center", (screen_manager.window.get_width() // 2, 150 + self.title_text.get_height())))
@@ -120,4 +118,3 @@ class WelcomeScreen(Screen):
         """Draw the image on the screen."""
         self.screen_manager.window.blit(self.background_image, self.background_image_rect)
         self.screen_manager.window.blit(self.image, self.image_rect)
-        
