@@ -1,5 +1,5 @@
 import pygame
-from ui.card import Card
+from ui.card import Card, SelectableCard, ActionableCard
 from typing import Dict, List, Literal
 
 class GridLayout:
@@ -13,6 +13,7 @@ class GridLayout:
         self.scroll_trigger = scroll_trigger
         self.card_factory = card_factory
         self.cards: List[Card] = []
+        self.card_type = None
         self.selected_card_index = 0
         self.cards_scroll = 0
 
@@ -28,8 +29,21 @@ class GridLayout:
             ) for i, item in enumerate(data)
         ]
 
-        if self.cards:
+        self.card_type = type(self.cards[0])
+
+        if self.cards and issubclass(self.card_type, SelectableCard):
             self.cards[0].select()
+
+    def handle_events(self, events):
+        print("Grid events:")
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                self.handle_keydown(event.key)
+
+            if self.card_type:
+                if issubclass(self.card_type, ActionableCard):
+                    for card in self.cards:
+                        card.handle_event(event)
 
     def handle_keydown(self, key: int):
         if key == pygame.K_w:
@@ -50,13 +64,17 @@ class GridLayout:
                 self.scroll("down")
             elif offset < 0 and self.selected_card_index // self.columns < self.cards_scroll:
                 self.scroll("up")
-            self.update_card_selection()
+            
+            if issubclass(self.card_type, SelectableCard):
+                self.update_card_selection()
 
     def move_selection_horizontal(self, offset: int):
         new_index = self.selected_card_index + offset
         if 0 <= new_index < len(self.cards) and (self.selected_card_index // self.columns) == (new_index // self.columns):
             self.selected_card_index = new_index
-            self.update_card_selection()
+
+            if issubclass(self.card_type, SelectableCard):
+                self.update_card_selection()
 
     def update_card_selection(self):
         for i, card in enumerate(self.cards):

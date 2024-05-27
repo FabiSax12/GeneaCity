@@ -1,13 +1,16 @@
 import pygame
 from .colors import Colors
+from .button import Button
+from abc import ABC, abstractmethod
 
-class Card:
+class Card(ABC):
     def __init__(self, window: pygame.Surface, width: int, height: int, x, y):
         self.__window = window
         self.__width = width
         self.__height = height
         self.__rect = pygame.Rect(x, y, self.__width, self.__height)
 
+    @abstractmethod
     def draw(self):
         pygame.draw.rect(self.window, Colors.LIGHT_GRAY.value, self.__rect, border_radius=15)
 
@@ -35,7 +38,41 @@ class Card:
     def height(self):
         return self.__height
 
-class CharacterCard(Card):
+class SelectableCard(Card, ABC):
+    def __init__(self, window: pygame.Surface, width: int, height: int, x: int, y: int):
+        super().__init__(window, width, height, x, y)
+        self.__selected = False
+
+    def select(self):
+        self.__selected = True
+
+    def deselect(self):
+        self.__selected = False
+
+    @property
+    def selected(self):
+        return self.__selected
+
+class ActionableCard(Card, ABC):
+    def __init__(self, window: pygame.Surface, width: int, height: int, x: int, y: int):
+        super().__init__(window, width, height, x, y)
+        self._action = None
+        self._action_button = None
+
+    @abstractmethod
+    def _create_action_button(self) -> Button:
+        pass
+
+    @property
+    def action(self):
+        return self._action
+    
+    @action.setter
+    def action(self, value):
+        self._action = value
+        self._action_button = self._create_action_button()
+
+class CharacterCard(SelectableCard):
     def __init__(self, window: pygame.Surface, width: int, height: int, x: int, y: int, character: dict):
         super().__init__(window, width, height, x, y)
         self.__character = character
@@ -95,3 +132,32 @@ class GameCard(Card):
     @property
     def game(self):
         return self.__game
+
+class ResidentCard(ActionableCard):
+    def __init__(self, window: pygame.Surface, width: int, height: int, x: int, y: int, resident: dict):
+        super().__init__(window, width, height, x, y)
+        self.__resident = resident
+        self.__name = pygame.font.Font("src/assets/fonts/PressStart2P-Regular.ttf", 10).render(resident["name"], True, Colors.BLACK.value)
+
+    def handle_event(self, event: pygame.event.Event):
+        print("Evento")
+        if self._action_button:
+            self._action_button.handle_event(event)
+
+    def draw(self):
+        pygame.draw.rect(self.window, Colors.WHITE.value, self.rect, border_radius=15)
+        self.window.blit(self.__name, (self.position[0] + 10, self.position[1] + 10))
+        if self._action_button:
+            self._action_button.draw(self.window)
+
+    def _create_action_button(self) -> Button:
+        return Button(
+            text="Casarse",
+            position=(self.position[0] + 10, self.position[1] + 70),
+            on_click=lambda: self.action(self.__resident["id"]),
+            size=(self.width - 20, 20),
+            font_size=25,
+            bg_color=Colors.RED.value,
+            hover_bg_color=Colors.DARK_PINK.value,
+            border_radius=5
+        )
