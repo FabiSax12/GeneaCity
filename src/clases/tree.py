@@ -47,7 +47,6 @@ class FamilyTree:
         """Display the family tree starting from the given character."""
         character = self.get_character(name)
         if character:
-            print(" " * level * 4 + character.name)
             if character.father:
                 self.display_tree(character.father.name, level + 1)
             if character.mother:

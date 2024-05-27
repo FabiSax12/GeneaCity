@@ -37,7 +37,6 @@ class GameDataManager:
             return []
         except json.JSONDecodeError:
             # Handles JSON decoding errors
-            print("Error decoding JSON file")
             return []
 
     def save(self):
@@ -63,7 +62,7 @@ class GameDataManager:
             with open(self.path, "w") as file:
                 json.dump(current_data, file, indent=4)
         except Exception as e:
-            print(f"Error saving game data: {e}")
+            raise Exception(f"Error saving game data: {e}")
 
     def update(self):
         """
@@ -78,7 +77,7 @@ class GameDataManager:
             with open(self.path, "w") as file:
                 json.dump(current_data, file, indent=4)
         except Exception as e:
-            print(f"Error updating game data: {e}")
+            raise Exception(f"Error updating game data: {e}")
 
     def load_last_game(self):
         """

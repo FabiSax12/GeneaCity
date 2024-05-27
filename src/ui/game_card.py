@@ -26,7 +26,6 @@ class GameCard:
         )
 
     def draw(self):
-        print("Rendering", self.__name_rect, self.__points_rect)
         pygame.draw.rect(self.__screen_manager.window, Colors.WHITE.value, self.__card)
         self.__screen_manager.window.blit(self.__name_text, self.__name_rect)
         self.__screen_manager.window.blit(self.__points_text, self.__points_rect)
