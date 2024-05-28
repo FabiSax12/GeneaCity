@@ -33,8 +33,10 @@ class SelectionScreen(Screen):
             character_id = self.grid_layout.cards[self.grid_layout.selected_card_index].character['id']
             response = self.screen_manager.api.select_available_inhabitant(character_id)
             
-            if response["status"]:
+            if response:
                 self.selected_character = self.screen_manager.api.get_inhabitant_information(character_id)
+
+            return response
 
     def handle_events(self, events):
         self.grid_layout.handle_events(events)
@@ -49,9 +51,9 @@ class SelectionScreen(Screen):
         self.grid_layout.handle_keydown(key)
         if key == pygame.K_RETURN:
             self.grid_layout.cards[self.grid_layout.selected_card_index].select()
-            self.select_character()
-            self.screen_manager.set_state(GameScreen(self.screen_manager, self.selected_character))
-            self.screen_manager.overlay_screen = InstructionsScreen(self.screen_manager)
+            if self.select_character():
+                self.screen_manager.current_screen = GameScreen(self.screen_manager, self.selected_character)
+                self.screen_manager.overlay_screen = InstructionsScreen(self.screen_manager)
 
     def update(self):
         pass

@@ -104,9 +104,7 @@ class Api(ApiInterface):
         # response = requests.get(f"{self.__url}/selectAvailableInhabitant/?id={inhabitant_id}").json()
         # return response["status"] == 1
         print("Selected inhabitant: ", inhabitant_id)
-        return {
-            "status": True
-        }  # Simulate successful selection
+        return True  # Simulate successful selection
 
     def get_inhabitant_information(self, inhabitant_id: int) -> Inhabitant:
         """Get the information of an inhabitant.
