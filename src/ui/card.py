@@ -134,20 +134,27 @@ class GameCard(Card):
         return self.__game
 
 class ResidentCard(ActionableCard):
-    def __init__(self, window: pygame.Surface, width: int, height: int, x: int, y: int, resident: dict):
+    def __init__(self, window: pygame.Surface, width: int, height: int, x: int, y: int, resident: dict, player: dict):
         super().__init__(window, width, height, x, y)
         self.__resident = resident
+        self.__player = player
         self.__name = pygame.font.Font("src/assets/fonts/PressStart2P-Regular.ttf", 10).render(resident["name"], True, Colors.BLACK.value)
 
     def handle_event(self, event: pygame.event.Event):
-        print("Evento")
         if self._action_button:
             self._action_button.handle_event(event)
 
     def draw(self):
         pygame.draw.rect(self.window, Colors.WHITE.value, self.rect, border_radius=15)
         self.window.blit(self.__name, (self.position[0] + 10, self.position[1] + 10))
-        if self._action_button:
+
+        if (self._action_button and 
+            self.__resident["marital_status"] == "Single" and
+            self.__player["marital_status"] == "Single" and
+            self.__resident["age"] >= 18 and
+            self.__resident["age"] <= 45 and
+            self.__resident["gender"] != self.__player["gender"]):
+
             self._action_button.draw(self.window)
 
     def _create_action_button(self) -> Button:
