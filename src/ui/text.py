@@ -69,7 +69,7 @@ class TextRenderer:
 
     def render_text(self, text: str, font_key: str, pos: Tuple[int, int], text_color=(255, 255, 255)) -> Tuple[pygame.Surface, pygame.Rect]:
         font = self.fonts.get(font_key, self.fonts["default"])
-        return self.simple_strategy.render(text, font, text_color, ("topleft", pos))
+        return self.simple_strategy.render(text, font, text_color, (pos[0], pos[1]))
 
     def render_text_with_outline(self, text: str, font_key: str, pos: Tuple[Literal["topleft", "center", "topright", "bottomleft", "bottomright"], Tuple[int, int]], outline_color=(0, 0, 0), text_color=(255, 255, 255)) -> Tuple[pygame.Surface, pygame.Rect]:
         font = self.fonts.get(font_key, self.fonts["default"])

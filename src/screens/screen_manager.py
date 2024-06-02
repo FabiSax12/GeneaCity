@@ -8,6 +8,7 @@ from ui.text import TextRenderer
 from ui.image import ImageHandler
 from interfaces.screen_manager import ScreenManagerInterface
 from clases.event_handler import EventHandler
+from ui.toast import Toast
 
 class ScreenManager(ScreenManagerInterface):
     """Class to manage game screens."""
@@ -23,6 +24,7 @@ class ScreenManager(ScreenManagerInterface):
         self.__current_screen: Screen = self.__initial_screen_cls(self)
         self.__previous_screen: Screen = None
         self.__overlay_screen: Screen = None
+        self.__toast = None
         self.__event_handler = EventHandler()
         self.__event_handler.attach(self.__current_screen)
         self.__clock = pygame.time.Clock()
@@ -65,9 +67,18 @@ class ScreenManager(ScreenManagerInterface):
             self.__overlay_screen.update()
             self.__overlay_screen.draw()
 
+        if self.__toast:
+            self.__toast.update()
+            self.__toast.draw(self.window)
+
     def handle_houses_response(self, houses):
         """Handle the response from the get_houses API call."""
         pass
+
+    def show_toast(self, message: str, duration: int = 2):
+        """Show a toast message."""
+        print("toast")
+        self.__toast = Toast(message, self.window.get_width() - 210, self.window.get_height() - 60, 200, 50, duration=duration)
 
     @property
     def current_screen(self):

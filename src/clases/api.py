@@ -56,6 +56,9 @@ class Api(ApiInterface):
         """
         response = requests.get(f"{self.__url}/getHousesResidents/?houseId={house_id}").json()
 
+        if not "residents" in response:
+            return []
+
         for i, resident in enumerate(response["residents"]):
             resident_info = self.get_inhabitant_information(resident["id"])
 

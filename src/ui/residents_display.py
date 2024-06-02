@@ -4,6 +4,7 @@ from ui.card import ResidentCard
 from screens.screen import Screen
 from ui.grid_layout import GridLayout
 from interfaces.screen_manager import ScreenManagerInterface
+from ui.marry_overlay import MarryOverlay
 
 class ResidentsOverlay(Screen):
     """Display residents in a house."""
@@ -79,7 +80,7 @@ class ResidentsOverlay(Screen):
     def create_resident_card(self, window, width, height, x, y, resident):
         """Create a resident card."""
         resident_card = ResidentCard(window, width, height, x, y, resident, self.screen_manager.game_data.data)
-        resident_card.action = self.__marry
+        resident_card.action = self.__show_marry_house_selection
 
         return resident_card
     
@@ -87,13 +88,23 @@ class ResidentsOverlay(Screen):
         """Delete the overlay screen."""
         del self.screen_manager.overlay_screen
 
-    def __marry(self, resident_id: int):
-        """Marry the resident."""
-        response = self.screen_manager.api.marry_inhabitants(
-            self.screen_manager.game_data.data["id"],
-            resident_id,
-            1000,
-            1000
-        )
+    def __show_marry_house_selection(self, resident):
+        """Show the house selection screen."""
+        self.screen_manager.overlay_screen = MarryOverlay(self.screen_manager, resident, self.__marry)
 
-        return response
+    def __marry(self, resident_id: int, x: int, y: int, on_error_callback=None):
+        """Marry the resident."""
+        try:
+            response = self.screen_manager.api.marry_inhabitants(
+                self.screen_manager.game_data.data["id"],
+                resident_id,
+                x,
+                y
+            )
+
+            return response
+        
+        except ValueError as e:
+            print("Error:", e)
+            on_error_callback(e)
+            

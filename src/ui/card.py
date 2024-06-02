@@ -174,7 +174,7 @@ class ResidentCard(ActionableCard):
         return Button(
             text="Casarse",
             position=(self.position[0] + self.width // 12, self.height // 4 * 3 - 10 + self.position[1]),
-            on_click=lambda: self.action(self.__resident["id"]),
+            on_click=lambda: self.action(self.__resident),
             size=(self.width // 3, 20),
             font_size=25,
             bg_color=Colors.RED.value,

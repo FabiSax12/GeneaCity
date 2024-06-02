@@ -18,21 +18,24 @@ class GridLayout:
         self.cards_scroll = 0
 
     def update_cards(self, window, data: List[Dict]):
-        self.cards = [
-            self.card_factory(
-                window,
-                self.card_width,
-                self.card_height,
-                self.position[0] + self.card_width * (i % self.columns) + self.margin_x * (i % self.columns),
-                self.position[1] + self.card_height * (i // self.columns) + self.margin_y * (i // self.columns),
-                item
-            ) for i, item in enumerate(data)
-        ]
+        try:
+            self.cards = [
+                self.card_factory(
+                    window,
+                    self.card_width,
+                    self.card_height,
+                    self.position[0] + self.card_width * (i % self.columns) + self.margin_x * (i % self.columns),
+                    self.position[1] + self.card_height * (i // self.columns) + self.margin_y * (i // self.columns),
+                    item
+                ) for i, item in enumerate(data)
+            ]
 
-        self.card_type = type(self.cards[0])
+            self.card_type = type(self.cards[0])
 
-        if self.cards and issubclass(self.card_type, SelectableCard):
-            self.cards[0].select()
+            if self.cards and issubclass(self.card_type, SelectableCard):
+                self.cards[0].select()
+        except IndexError:
+            pass
 
     def handle_events(self, event):
         if self.card_type:
@@ -91,5 +94,14 @@ class GridLayout:
     def draw(self, window):
         start_index = self.cards_scroll * self.columns
         end_index = start_index + self.columns * 4
-        for card in self.cards[start_index:end_index]:
-            card.draw()
+
+        if self.cards == []:
+            if not self.cards:
+                text = "No hay elementos para mostrar"
+                font = pygame.font.Font(None, 36)
+                text_surface = font.render(text, True, (255, 255, 255))
+                text_rect = text_surface.get_rect(center=(window.get_width() // 2, window.get_height() // 2))
+                window.blit(text_surface, text_rect)
+        else:
+            for card in self.cards[start_index:end_index]:
+                card.draw()
