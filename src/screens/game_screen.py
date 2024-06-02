@@ -1,6 +1,6 @@
-import sys
 import pygame
 from clases.map import Map
+from ui.colors import Colors
 from clases.house import House
 from screens.screen import Screen
 from characters.player import Player
@@ -79,6 +79,7 @@ class GameScreen(Screen):
                     
     def draw(self):
         """Draw screen."""
+        pygame.Surface.fill(self.screen_manager.window, Colors.GRASS.value)
         self.__map.draw()
         for house in self.__houses:
             house.draw()
@@ -87,6 +88,7 @@ class GameScreen(Screen):
         name_text, name_rect = self.text_renderer.render_text_with_outline(f"Nombre: {self.__player.name}", "default", ("topleft", (10, 40)))
         age_text, age_rect = self.text_renderer.render_text_with_outline(f"Edad: {self.__player.age}", "default", ("topleft", (10, 70)))
         score_text, score_rect = self.text_renderer.render_text_with_outline(f"Puntuación: {self.__player.score}", "default", ("topleft", (10, 100)))
+
 
         self.screen_manager.window.blit(pos_text, pos_rect)
         self.screen_manager.window.blit(name_text, name_rect)
