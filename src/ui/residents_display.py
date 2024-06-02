@@ -1,15 +1,14 @@
 import pygame
 from ui.button import Button
-from pygame.event import Event
 from ui.card import ResidentCard
 from screens.screen import Screen
 from ui.grid_layout import GridLayout
-from screens.screen_manager import ScreenManager
+from interfaces.screen_manager import ScreenManagerInterface
 
 class ResidentsOverlay(Screen):
     """Display residents in a house."""
 
-    def __init__(self, residents: list[dict], screen_manager: ScreenManager):
+    def __init__(self, residents: list[dict], screen_manager: ScreenManagerInterface):
         """Initialize the residents display.
 
         Args:
@@ -19,16 +18,16 @@ class ResidentsOverlay(Screen):
         super().__init__(screen_manager)
         self.__residents = residents
         self.__grid_layout = GridLayout(
-            card_width=100, 
+            card_width=250, 
             card_height=100, 
-            columns=4, 
+            columns=2,
             card_factory=self.create_resident_card,
-            position=(screen_manager.window.get_width() // 2 - 200, 200)
+            position=(screen_manager.window.get_width() // 2 - 255, 150)
         )
         self.__grid_layout.update_cards(self.screen_manager.window, self.__residents)
         self.__close_button = Button(
             "Cerrar", 
-            (self.screen_manager.window.get_width() // 2 - 100, self.screen_manager.window.get_height() - 50),
+            (self.screen_manager.window.get_width() // 2 - 100, self.screen_manager.window.get_height() - 150),
             self.__delete_overlay
         )
 
@@ -65,25 +64,21 @@ class ResidentsOverlay(Screen):
         self.__close_button.draw(self.screen_manager.window)
         self.__grid_layout.draw(self.screen_manager.window)
 
-    def update(self):
-        pass
+    def update(self, *args, **kwargs):
+        """Update the screen."""
+        if "event" in kwargs:
+            event = kwargs["event"]
 
-    def handle_events(self, events: list[Event]):
-        self.__grid_layout.handle_events(events)
-        for event in events:
+            self.__grid_layout.handle_events(event)
             self.__close_button.handle_event(event)
             
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     del self.screen_manager.overlay_screen
-                    break
 
     def create_resident_card(self, window, width, height, x, y, resident):
         """Create a resident card."""
-        resident_card = ResidentCard(window, width, height, x, y, resident)
+        resident_card = ResidentCard(window, width, height, x, y, resident, self.screen_manager.game_data.data)
         resident_card.action = self.__marry
 
         return resident_card
@@ -97,8 +92,8 @@ class ResidentsOverlay(Screen):
         response = self.screen_manager.api.marry_inhabitants(
             self.screen_manager.game_data.data["id"],
             resident_id,
-            100,
-            100
+            1000,
+            1000
         )
 
         return response

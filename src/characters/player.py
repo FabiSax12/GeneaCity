@@ -1,11 +1,11 @@
 import pygame
 from visuals.sprite import Sprite
 from characters.person import Person
-from screens.screen_manager import ScreenManager
+from interfaces.screen_manager import ScreenManagerInterface
 from ui.residents_display import ResidentsOverlay
 
 class Player(Person):
-    def __init__(self, person_info: dict, screen_manager: ScreenManager):
+    def __init__(self, person_info: dict, screen_manager: ScreenManagerInterface):
         super().__init__(person_info)
         self.__score = 0
         self.__position = pygame.Vector2(person_info["position"]["x"], person_info["position"]["y"])

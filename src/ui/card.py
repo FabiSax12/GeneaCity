@@ -139,6 +139,16 @@ class ResidentCard(ActionableCard):
         self.__resident = resident
         self.__player = player
         self.__name = pygame.font.Font("src/assets/fonts/PressStart2P-Regular.ttf", 10).render(resident["name"], True, Colors.BLACK.value)
+        self.__marital_status = pygame.font.Font("src/assets/fonts/PressStart2P-Regular.ttf", 7).render(f"Estado civil: {resident['marital_status']}", True, Colors.BLACK.value)
+        self.__gender = pygame.font.Font("src/assets/fonts/PressStart2P-Regular.ttf", 7).render(f"Género: {resident["gender"]}", True, Colors.BLACK.value)
+        self.__image = self.__load_image(resident["gender"], resident["id"])
+
+    def __load_image(self, gender: str, character_id: int) -> pygame.Surface:
+        image_path = f"src/assets/images/spritesheet{gender}{character_id % 4 + 1}.png"
+        image = pygame.image.load(image_path)
+        image.set_clip(pygame.Rect(0, 0, image.get_width() // 4, image.get_height() // 4))
+        image = image.subsurface(image.get_clip())
+        return pygame.transform.scale(image, (image.get_width() * 1.5, image.get_height() * 1.5))
 
     def handle_event(self, event: pygame.event.Event):
         if self._action_button:
@@ -147,8 +157,11 @@ class ResidentCard(ActionableCard):
     def draw(self):
         pygame.draw.rect(self.window, Colors.WHITE.value, self.rect, border_radius=15)
         self.window.blit(self.__name, (self.position[0] + 10, self.position[1] + 10))
+        self.window.blit(self.__marital_status, (self.position[0] + 10, self.position[1] + 25))
+        self.window.blit(self.__gender, (self.position[0] + 10, self.position[1] + 40))
+        self.window.blit(self.__image, (self.position[0] + self.width // 4 * 3 - self.__image.get_width() // 2, self.position[1] + self.height // 2 - self.__image.get_height() // 2))
 
-        if (self._action_button and 
+        if (self._action_button and
             self.__resident["marital_status"] == "Single" and
             self.__player["marital_status"] == "Single" and
             self.__resident["age"] >= 18 and
@@ -160,9 +173,9 @@ class ResidentCard(ActionableCard):
     def _create_action_button(self) -> Button:
         return Button(
             text="Casarse",
-            position=(self.position[0] + 10, self.position[1] + 70),
+            position=(self.position[0] + self.width // 12, self.height // 4 * 3 - 10 + self.position[1]),
             on_click=lambda: self.action(self.__resident["id"]),
-            size=(self.width - 20, 20),
+            size=(self.width // 3, 20),
             font_size=25,
             bg_color=Colors.RED.value,
             hover_bg_color=Colors.DARK_PINK.value,

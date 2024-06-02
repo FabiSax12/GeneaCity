@@ -1,4 +1,3 @@
-import sys
 import pygame
 from screens.instructions_screen import InstructionsScreen
 from ui.colors import Colors
@@ -38,15 +37,6 @@ class SelectionScreen(Screen):
 
             return response
 
-    def handle_events(self, events):
-        self.grid_layout.handle_events(events)
-        for event in events:
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                self.handle_keydown(event.key)
-
     def handle_keydown(self, key: int):
         self.grid_layout.handle_keydown(key)
         if key == pygame.K_RETURN:
@@ -55,8 +45,12 @@ class SelectionScreen(Screen):
                 self.screen_manager.current_screen = GameScreen(self.screen_manager, self.selected_character)
                 self.screen_manager.overlay_screen = InstructionsScreen(self.screen_manager)
 
-    def update(self):
-        pass
+    def update(self, *args, **kwargs):
+        if "event" in kwargs:
+            event = kwargs["event"]
+
+            if event.type == pygame.KEYDOWN:
+                self.handle_keydown(event.key)
 
     def draw(self):
         self.screen_manager.window.fill(Colors.WHITE.value)

@@ -55,6 +55,15 @@ class Api(ApiInterface):
             list[Resident]: list of residents in the house
         """
         response = requests.get(f"{self.__url}/getHousesResidents/?houseId={house_id}").json()
+
+        for i, resident in enumerate(response["residents"]):
+            resident_info = self.get_inhabitant_information(resident["id"])
+
+            response["residents"][i]["id"] = int(resident["id"])
+            response["residents"][i]["age"] = int(resident_info["age"])
+            response["residents"][i]["father"] = int(resident["father"])
+            response["residents"][i]["mother"] = int(resident["mother"])
+
         if response["status"] == 1:
             return response["residents"]
         else:

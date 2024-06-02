@@ -16,7 +16,7 @@ class GameLoop:
         """Run the main game loop."""
         while self.screen_manager.current_screen is not None:
             self.screen_manager.update()
-            self.screen_manager.handle_events(pygame.event.get())
+            # self.screen_manager.handle_events(pygame.event.get())
             pygame.display.flip()
 
 class GameManager:

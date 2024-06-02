@@ -5,12 +5,12 @@ from clases.house import House
 from screens.screen import Screen
 from characters.player import Player
 from screens.pause_screen import PauseScreen
-from screens.screen_manager import ScreenManager
+from interfaces.screen_manager import ScreenManagerInterface
 
 class GameScreen(Screen):
     """Game screen class."""
 
-    def __init__(self, screen_manager: ScreenManager, player_data: dict):
+    def __init__(self, screen_manager: ScreenManagerInterface, player_data: dict):
         super().__init__(screen_manager)
         self.__map = Map((100000, 100000), self.screen_manager.window)
         self.__player = Player(player_data, screen_manager)
@@ -19,13 +19,6 @@ class GameScreen(Screen):
         self.__houses = []
         self.text_renderer = screen_manager.text_renderer
         self.update_houses()
-
-    def handle_events(self, events: list[pygame.event.Event]):
-        """Handle pygame events."""
-        for event in events:
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
 
     def handle_input(self):
         """Handle input events."""
@@ -53,12 +46,6 @@ class GameScreen(Screen):
 
         self.check_map_update()
 
-        if keys[pygame.K_e]:
-            self.__player.interact(self.__houses)
-
-        if keys[pygame.K_ESCAPE]:
-            self.screen_manager.overlay_screen = PauseScreen(self.screen_manager)
-
     def move_player(self, horizontal_movement: float, vertical_movement: float):
         """Move the player and the map."""
         self.__player.move(horizontal_movement, vertical_movement)
@@ -78,10 +65,18 @@ class GameScreen(Screen):
             self.__dx_counter = 0
             self.__dy_counter = 0
 
-    def update(self):
+    def update(self, *args, **kwargs):
         """Update screen state."""
-        self.handle_input()
-
+        if "event" in kwargs:
+            event = kwargs["event"]
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.screen_manager.overlay_screen = PauseScreen(self.screen_manager)
+            
+                if event.key == pygame.K_e:
+                    self.__player.interact(self.__houses)
+                    
     def draw(self):
         """Draw screen."""
         self.__map.draw()

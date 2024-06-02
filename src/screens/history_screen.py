@@ -7,12 +7,12 @@ from ui.text import TextRenderer
 from ui.image import ImageHandler
 from screens.screen import Screen
 from ui.grid_layout import GridLayout
-from screens.screen_manager import ScreenManager
+from interfaces.screen_manager import ScreenManagerInterface
 
 class HistoryScreen(Screen):
     """History screen class."""
     
-    def __init__(self, screen_manager: ScreenManager):
+    def __init__(self, screen_manager: ScreenManagerInterface):
         super().__init__(screen_manager)
 
         self.text_renderer = TextRenderer("PressStart2P-Regular.ttf")
@@ -47,16 +47,14 @@ class HistoryScreen(Screen):
     def create_game_card(self, window, width, height, x, y, game):
         return GameCard(window, width, height, x, y, game)
 
-    def handle_events(self, events: list[pygame.event.Event]):
-        for event in events:
-            if event.type == pygame.QUIT:
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                self.grid_layout.handle_keydown(event.key)
-            self.back_button.handle_event(event)
+    def update(self, *args, **kwargs):
+        if "event" in kwargs:
+            event = kwargs["event"]
 
-    def update(self):
-        pass
+            if event.type == pygame.KEYDOWN:
+                self.grid_layout.handle_keydown(event.key)
+
+            self.back_button.handle_event(event)
 
     def draw(self):
         self.screen_manager.window.blit(self.background_image, self.background_image_rect)

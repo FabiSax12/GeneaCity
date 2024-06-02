@@ -2,10 +2,10 @@ import sys
 import pygame
 from ui.colors import Colors
 from screens.screen import Screen
-from screens.screen_manager import ScreenManager
+from interfaces.screen_manager import ScreenManagerInterface
 
 class InstructionsScreen(Screen):
-    def __init__(self, screen_manager: ScreenManager):
+    def __init__(self, screen_manager: ScreenManagerInterface):
         super().__init__(screen_manager)
         self.font = "src/assets/fonts/PressStart2P-Regular.ttf"
         self.title_text = pygame.font.Font(self.font, 16).render("Instrucciones", True, Colors.BLACK.value)
@@ -18,19 +18,13 @@ class InstructionsScreen(Screen):
 
         self.continue_text = pygame.font.Font(self.font, 7).render("Presiona 'ENTER' para continuar", True, Colors.BLACK.value)
 
-    def handle_events(self, events):
-        for event in events:
-
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+    def update(self, *args, **kwargs):
+        if "event" in kwargs:
+            event = kwargs["event"]
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     del self._screen_manager.overlay_screen
-
-    def update(self):
-        pass
 
     def draw(self):
         window_width = self.screen_manager.window.get_width()

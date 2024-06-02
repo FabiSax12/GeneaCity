@@ -1,11 +1,13 @@
 import pygame
 from typing import Type
+from screens.game_screen import GameScreen
 from screens.screen import Screen
 from interfaces.api_interface import ApiInterface
 from clases.game_data import GameDataManager
 from ui.text import TextRenderer
 from ui.image import ImageHandler
 from interfaces.screen_manager import ScreenManagerInterface
+from clases.event_handler import EventHandler
 
 class ScreenManager(ScreenManagerInterface):
     """Class to manage game screens."""
@@ -21,6 +23,8 @@ class ScreenManager(ScreenManagerInterface):
         self.__current_screen: Screen = self.__initial_screen_cls(self)
         self.__previous_screen: Screen = None
         self.__overlay_screen: Screen = None
+        self.__event_handler = EventHandler()
+        self.__event_handler.attach(self.__current_screen)
         self.__clock = pygame.time.Clock()
         self.__dt = 0
         self.__api = api
@@ -28,14 +32,12 @@ class ScreenManager(ScreenManagerInterface):
         self.__req_timer = 0
         self.__game_mode: str = None
 
-        print(self.__text_renderer)
-
-    def handle_events(self, events: list[pygame.event.Event]):
-        """Handle pygame events."""
-        if self.__overlay_screen:
-            self.__overlay_screen.handle_events(events)
-        elif self.__current_screen:
-            self.__current_screen.handle_events(events)
+    # def handle_events(self, events: list[pygame.event.Event]):
+    #     """Handle pygame events."""
+    #     if self.__overlay_screen:
+    #         self.__overlay_screen.handle_events(events)
+    #     elif self.__current_screen:
+    #         self.__current_screen.handle_events(events)
 
     def update(self):
         """Update the screen manager."""
@@ -49,8 +51,11 @@ class ScreenManager(ScreenManagerInterface):
             self.__api.get_houses((0, 0), self.handle_houses_response)
 
         if self.__current_screen:
-            if self.__overlay_screen is None:
-                self.__current_screen.update()
+
+            if isinstance(self.__current_screen, GameScreen) and self.__overlay_screen is None:
+                self.__current_screen.handle_input()
+
+            self.__event_handler.handle_events()
             self.__current_screen.draw()
 
         if self.__overlay_screen:
@@ -73,7 +78,9 @@ class ScreenManager(ScreenManagerInterface):
     def current_screen(self, screen: Screen):
         """Set the current screen."""
         self.__previous_screen = self.__current_screen
+        self.__event_handler.dettach(self.__current_screen)
         self.__current_screen = screen
+        self.__event_handler.attach(screen)
 
     @property
     def previous_screen(self):
@@ -89,10 +96,12 @@ class ScreenManager(ScreenManagerInterface):
     def overlay_screen(self, screen: Screen):
         """Set the overlay screen."""
         self.__overlay_screen = screen
+        self.__event_handler.attach(screen)
 
     @overlay_screen.deleter
     def overlay_screen(self):
         """Delete the overlay screen."""
+        self.__event_handler.dettach(self.__overlay_screen)
         self.__overlay_screen = None
 
     @property

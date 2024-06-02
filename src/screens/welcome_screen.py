@@ -56,15 +56,6 @@ class WelcomeScreen(Screen):
             hover_bg_color=(0, 162, 255),
         )
 
-    def handle_events(self, events: list[pygame.event.Event]):
-        """Handle pygame events."""
-        for event in events:
-            if event.type == pygame.QUIT:
-                self.quit_game()
-            self.new_game_button.handle_event(event)
-            self.continue_button.handle_event(event)
-            self.history_button.handle_event(event)
-
     def start_new_game(self):
         """Start a new game."""
         self.screen_manager.game_mode = WelcomeScreen.NEW_GAME_OPTION
@@ -96,9 +87,12 @@ class WelcomeScreen(Screen):
         pygame.quit()
         sys.exit()
 
-    def update(self):
-        """Update screen state."""
-        pass
+    def update(self, *args, **kwargs):
+        if "event" in kwargs:
+            event = kwargs["event"]
+            self.new_game_button.handle_event(event)
+            self.continue_button.handle_event(event)
+            self.history_button.handle_event(event)
 
     def draw(self):
         """Draw screen."""
