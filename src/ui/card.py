@@ -151,8 +151,17 @@ class ResidentCard(ActionableCard):
         return pygame.transform.scale(image, (image.get_width() * 1.5, image.get_height() * 1.5))
 
     def handle_event(self, event: pygame.event.Event):
-        if self._action_button:
+        if (self._action_button and
+            self.__resident["marital_status"] == "Single" and
+            self.__player["marital_status"] == "Single" and
+            self.__resident["age"] >= 18 and
+            self.__resident["age"] <= 45 and
+            self.__resident["gender"] != self.__player["gender"]):
+
             self._action_button.handle_event(event)
+
+        if self._action_button and self.__player["partner"] == self.__resident["id"]:
+            self._action_button.handle_event(event)    
 
     def draw(self):
         pygame.draw.rect(self.window, Colors.WHITE.value, self.rect, border_radius=15)
@@ -170,7 +179,23 @@ class ResidentCard(ActionableCard):
 
             self._action_button.draw(self.window)
 
+        if self._action_button and self.__player["partner"] == self.__resident["id"]:
+            self._action_button.draw(self.window)
+
     def _create_action_button(self) -> Button:
+        if self.__player["partner"] == self.__resident["id"]:
+            print("Es tu pareja")
+            return Button(
+                text="Tener hijo",
+                position=(self.position[0] + self.width // 12, self.height // 4 * 3 - 10 + self.position[1]),
+                on_click=lambda: self.action(self.__resident),
+                size=(self.width // 3, 20),
+                font_size=25,
+                bg_color=Colors.RED.value,
+                hover_bg_color=Colors.DARK_PINK.value,
+                border_radius=5
+            )
+            
         return Button(
             text="Casarse",
             position=(self.position[0] + self.width // 12, self.height // 4 * 3 - 10 + self.position[1]),

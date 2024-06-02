@@ -80,6 +80,10 @@ class ScreenManager(ScreenManagerInterface):
         print("toast")
         self.__toast = Toast(message, self.window.get_width() - 210, self.window.get_height() - 60, 200, 50, duration=duration)
 
+    def delete_overlay(self):
+        """Delete the overlay screen."""
+        del self.overlay_screen
+
     @property
     def current_screen(self):
         """Get the current screen."""

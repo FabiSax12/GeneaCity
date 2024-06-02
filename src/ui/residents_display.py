@@ -2,6 +2,7 @@ import pygame
 from ui.button import Button
 from ui.card import ResidentCard
 from screens.screen import Screen
+from ui.child_overlay import ChildOverlay
 from ui.grid_layout import GridLayout
 from interfaces.screen_manager import ScreenManagerInterface
 from ui.marry_overlay import MarryOverlay
@@ -80,7 +81,10 @@ class ResidentsOverlay(Screen):
     def create_resident_card(self, window, width, height, x, y, resident):
         """Create a resident card."""
         resident_card = ResidentCard(window, width, height, x, y, resident, self.screen_manager.game_data.data)
-        resident_card.action = self.__show_marry_house_selection
+        if resident["id"] == self.screen_manager.game_data.data["partner"]:
+            resident_card.action = self.__show_children_creation
+        else:
+            resident_card.action = self.__show_marry_house_selection
 
         return resident_card
     
@@ -90,7 +94,13 @@ class ResidentsOverlay(Screen):
 
     def __show_marry_house_selection(self, resident):
         """Show the house selection screen."""
+        self.__delete_overlay()
         self.screen_manager.overlay_screen = MarryOverlay(self.screen_manager, resident, self.__marry)
+
+    def __show_children_creation(self, resident):
+        """Show the children creation screen."""
+        self.__delete_overlay()
+        self.screen_manager.overlay_screen = ChildOverlay(self.screen_manager, self.__create_child)
 
     def __marry(self, resident_id: int, x: int, y: int, on_error_callback=None):
         """Marry the resident."""
@@ -102,9 +112,31 @@ class ResidentsOverlay(Screen):
                 y
             )
 
+            self.screen_manager.game_data.data["partner"] = resident_id
+            self.screen_manager.game_data.data["marital_status"] = "Married"
+            # self.screen_manager.game_data.data["house"] = response["houseId"]
+            self.screen_manager.game_data.save()
+
             return response
         
         except ValueError as e:
             print("Error:", e)
             on_error_callback(e)
             
+    def __create_child(self, name: str, gender, age):
+        """Create a child."""
+        try:
+            response = self.screen_manager.api.create_children(
+                name,
+                self.screen_manager.game_data.data["id"],
+                gender,
+                age
+            )
+
+            if response:
+                self.screen_manager.show_toast("Hijo creado exitosamente.", 3)
+                del self.screen_manager.overlay_screen                
+
+        except ValueError as e:
+            print("Error:", e)
+            self.screen_manager.show_toast("Error al crear hijo.", 3)

@@ -113,8 +113,8 @@ class Api(ApiInterface):
         Returns:
             dict: selected inhabitant
         """
-        # response = requests.get(f"{self.__url}/selectAvailableInhabitant/?id={inhabitant_id}").json()
-        # return response["status"] == 1
+        response = requests.get(f"{self.__url}/selectAvailableInhabitant/?id={inhabitant_id}").json()
+        return response["status"] == 1
         print("Selected inhabitant: ", inhabitant_id)
         return True  # Simulate successful selection
 

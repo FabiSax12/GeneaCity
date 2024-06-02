@@ -74,6 +74,8 @@ class WelcomeScreen(Screen):
             "y": game_data["position"]["y"]
         }
 
+        response["partner"] = game_data["partner"]
+
         self.screen_manager.game_data.data = response
         self.screen_manager.current_screen = GameScreen(self.screen_manager, response)
         self.screen_manager.overlay_screen = InstructionsScreen(self.screen_manager)

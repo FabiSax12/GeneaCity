@@ -14,6 +14,7 @@ class Player(Person):
 
         person_info["score"] = self.__score
         self.__screen_manager.game_data.data = person_info
+        self.__screen_manager.game_data.save()
 
     def draw(self, map_surface: pygame.Surface):
         """Draw the player on the map.
