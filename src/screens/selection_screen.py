@@ -13,7 +13,7 @@ class SelectionScreen(Screen):
         self.font = pygame.font.SysFont("Arial", 25)
         self.title_text = self.font.render("Personajes disponibles", True, Colors.BLACK.value)
         self.characters = []
-        self.grid_layout = GridLayout(150, 100, 4, self.create_character_card, position=(85, 100), scroll_trigger=3)
+        self.grid_layout = GridLayout(screen_manager, 150, 100, 4, self.create_character_card, position=(85, 100), scroll_trigger=3)
         self.load_characters()
         self.selected_character = None
 

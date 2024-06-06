@@ -20,6 +20,7 @@ class ResidentsOverlay(Screen):
         super().__init__(screen_manager)
         self.__residents = residents
         self.__grid_layout = GridLayout(
+            screen_manager,
             card_width=250, 
             card_height=100, 
             columns=2,
@@ -50,16 +51,6 @@ class ResidentsOverlay(Screen):
             name_text, name_rect = self.screen_manager.text_renderer.render_text_with_outline(resident["name"], "default", ("topleft", (rect_x + 10, rect_y + 10 + i * 100)))
 
             self.screen_manager.window.blit(name_text, name_rect)
-
-    def print_residents(self):
-        """Print residents in a house."""
-        for resident in self.__residents:
-            print("ID: ", resident["id"])
-            print("Name: ", resident["name"])
-            print("Gender: ", resident["gender"])
-            print("Marital status: ", resident["marital_status"])
-            print("Father: ", resident["father"])
-            print("Mother: ", resident["mother"])
 
     def draw(self):
         """Draw the screen."""
@@ -133,9 +124,11 @@ class ResidentsOverlay(Screen):
                 age
             )
 
-            if response:
+            if response["childId"]:
                 self.screen_manager.show_toast("Hijo creado exitosamente.", 3)
-                del self.screen_manager.overlay_screen                
+                self.screen_manager.game_data.data["children"].append({"id": response["childId"], "name": name})
+                self.screen_manager.game_data.save()
+                del self.screen_manager.overlay_screen
 
         except ValueError as e:
             print("Error:", e)

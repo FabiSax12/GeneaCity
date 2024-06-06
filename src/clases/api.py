@@ -115,8 +115,6 @@ class Api(ApiInterface):
         """
         response = requests.get(f"{self.__url}/selectAvailableInhabitant/?id={inhabitant_id}").json()
         return response["status"] == 1
-        print("Selected inhabitant: ", inhabitant_id)
-        return True  # Simulate successful selection
 
     def get_inhabitant_information(self, inhabitant_id: int) -> Inhabitant:
         """Get the information of an inhabitant.
@@ -134,17 +132,19 @@ class Api(ApiInterface):
                 data = response["inhabitant"]
                 data["id"] = int(data["id"])
                 data["age"] = int(data["age"])
-                data["mother"] = int(data["mother"])
-                data["father"] = int(data["father"])
+                data["mother"] = int(data["mother"]) if data["mother"] else None
+                data["father"] = int(data["father"]) if data["father"] else None
                 data["house"] = {
                     "id": int(data["house"]),
                     "x": 250,
                     "y": 250
-                }
+                } if data["house"] else None
                 data["position"] = {
                     "x": 250,
                     "y": 250
-                }
+                } if data["alive"] else None
+                if data["marital_status"] == "Single":
+                    data["partner"] = None
                 return data
             elif response["status"] == 0:
                 raise ValueError(response["error"])
@@ -187,7 +187,7 @@ class Api(ApiInterface):
         if response["status"] == 0 and response["error"]:
             raise ValueError(response["error"])
 
-        return response["status"] == 1
+        return response["childId"]
 
     # Properties
 

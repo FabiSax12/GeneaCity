@@ -1,5 +1,7 @@
 import pygame
 from clases.map import Map
+from clases.tree import FamilyTree
+from screens.tree_screen import FamilyTreeScreen
 from ui.colors import Colors
 from clases.house import House
 from screens.screen import Screen
@@ -52,7 +54,7 @@ class GameScreen(Screen):
         self.__dx_counter += horizontal_movement
         self.__dy_counter += vertical_movement
 
-        if self.__player.pos[0] > 0 or self.__player.pos[1] > 0:
+        if self.__player.pos[0] > 0 and self.__player.pos[0] < 100000 or self.__player.pos[1] > 0 and self.__player.pos[1] < 100000:
             self.__map.move(-horizontal_movement, -vertical_movement)
             for house in self.__houses:
                 house.move(-horizontal_movement, -vertical_movement)
@@ -76,6 +78,9 @@ class GameScreen(Screen):
             
                 if event.key == pygame.K_e:
                     self.__player.interact(self.__houses)
+
+                if event.key == pygame.K_TAB:
+                    self.screen_manager.overlay_screen = FamilyTreeScreen(self.screen_manager, self.__player.id)
                     
     def draw(self):
         """Draw screen."""

@@ -62,7 +62,6 @@ class GameDataManager:
         current_data = self.load()
 
         if current_data == []:
-            print("New game data added")
             current_data.append(self.data)
         else:
             for i in range(len(current_data)):

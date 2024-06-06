@@ -28,10 +28,9 @@ class Button:
         self.hover_bg_color = hover_bg_color
         self.border_radius = border_radius
         self.hovered = False
-        
         self.font = pygame.font.Font(None, font_size)
-        self.rect = pygame.Rect(position, size)
-        self.text_surface = self.font.render(text, True, text_color)
+        self.rect = pygame.Rect(self.position, self.size)
+        self.text_surface = self.font.render(self.text, True, self.text_color)
         self.text_rect = self.text_surface.get_rect(center=self.rect.center)
     
     def handle_event(self, event):
@@ -53,10 +52,14 @@ class Button:
         Args:
             screen (pygame.Surface): The screen to draw the button on.
         """
+        
+        self.rect = pygame.Rect(self.position, self.size)
+        self.text_surface = self.font.render(self.text, True, self.text_color)
+        self.text_rect = self.text_surface.get_rect(center=self.rect.center)
+
         bg_color = self.hovered and self.hover_bg_color or self.bg_color
         pygame.draw.rect(screen, bg_color, self.rect, border_radius=self.border_radius)
         
-        # Optional: Add a shadow effect
         shadow_color = (0, 0, 0, 100)
         shadow_offset = 5
         shadow_rect = self.rect.move(shadow_offset, shadow_offset)

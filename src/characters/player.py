@@ -1,4 +1,5 @@
 import pygame
+from clases.tree import CharacterNode, FamilyTree
 from visuals.sprite import Sprite
 from characters.person import Person
 from interfaces.screen_manager import ScreenManagerInterface
@@ -7,6 +8,7 @@ from ui.residents_display import ResidentsOverlay
 class Player(Person):
     def __init__(self, person_info: dict, screen_manager: ScreenManagerInterface):
         super().__init__(person_info)
+        self.__family_tree = FamilyTree(person_info)
         self.__score = 0
         self.__position = pygame.Vector2(person_info["position"]["x"], person_info["position"]["y"])
         self.__sprite = Sprite(self.__position, self.info["gender"], self.info["id"])
@@ -42,16 +44,16 @@ class Player(Person):
         
         if self.__position.x + dx < 0:
             self.__position.x = 0
-        elif self.__position.x + dx > 100000 - self.__sprite.image.get_width():
-            self.__position.x = 100000 - self.__sprite.image.get_width()
+        elif self.__position.x + dx > 100000:
+            self.__position.x = 100000
         else:
             self.__position.x += dx
             self.__sprite.update()
 
         if self.__position.y + dy < 0:
             self.__position.y = 0
-        elif self.__position.y + dy > 100000 - self.__sprite.image.get_height():
-            self.__position.y = 100000 - self.__sprite.image.get_height()
+        elif self.__position.y + dy > 100000:
+            self.__position.y = 100000
         else:
             self.__position.y += dy
             self.__sprite.update()
@@ -95,12 +97,62 @@ class Player(Person):
                 residents_display = ResidentsOverlay(residents, self.__screen_manager)
                 self.__screen_manager.overlay_screen = residents_display
 
+                for resident in residents:
+                    print(resident)
+                    character = self.__family_tree.get_node(resident["id"])
+
+                    if character is None:
+                        father = self.__family_tree.get_node(resident["father"])
+                        if father: father.children.append(CharacterNode(resident))
+
+                        mother = self.__family_tree.get_node(resident["mother"])
+                        if mother: mother.children.append(CharacterNode(resident))
+
+                        self.__score += 10
+                        continue
+                    
+                    if character.father is None:
+                        character.father = {
+                            "id": resident["father"],
+                            "name": self.__screen_manager.api.get_inhabitant_information(resident["father"])["name"],
+                            "father": None,
+                            "mother": None
+                        }
+                        self.__score += 10
+
+                    if character.mother is None:
+                        character.mother = {
+                            "id": resident["mother"],
+                            "name": self.__screen_manager.api.get_inhabitant_information(resident["mother"])["name"],
+                            "father": None,
+                            "mother": None
+                        }
+                        self.__score += 10
+
     def __save_position(self):
         """Save the player's position to the game data."""
         self.__screen_manager.game_data.data["position"] = {
             "x": int(self.__position.x),
             "y": int(self.__position.y)
         }
+
+    def add_family_member(self, member: dict, relation: str, id: int):
+        """Add a family member to the family tree.
+
+        Args:
+            member (dict): family member information
+        """
+        self.__family_tree.add_member(member, relation, id)
+
+    def search_kinship(self, id: int):
+        """Search for kinship in the family tree.
+
+        Args:
+            id (int): id of the family member to search for
+        """
+        return self.__family_tree.search_kinship(id)
+    
+    
 
     # Properties
     @property

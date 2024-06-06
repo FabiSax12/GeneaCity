@@ -3,7 +3,8 @@ from ui.card import Card, SelectableCard, ActionableCard
 from typing import Dict, List, Literal
 
 class GridLayout:
-    def __init__(self, card_width, card_height, columns, card_factory, margin_x=10, margin_y=10, position=(0, 0), scroll_trigger=0):
+    def __init__(self, screen_manager, card_width, card_height, columns, card_factory, margin_x=10, margin_y=10, position=(0, 0), scroll_trigger=0):
+        self.screen_manager = screen_manager
         self.card_width = card_width
         self.card_height = card_height
         self.columns = columns
@@ -90,6 +91,8 @@ class GridLayout:
         dy = 110 if direction == "down" else -110
         for card in self.cards:
             card.position = (card.position[0], card.position[1] - dy)
+            if issubclass(self.card_type, ActionableCard):
+                card._action_button.position = (card._action_button.position[0], card._action_button.position[1] - dy)
 
     def draw(self, window):
         start_index = self.cards_scroll * self.columns

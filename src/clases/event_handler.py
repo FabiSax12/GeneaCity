@@ -12,13 +12,11 @@ class EventHandler(IObservable):
         """Add observer to the list of observers."""
         if observer not in self.__observers:
             self.__observers.append(observer)
-            print(self.__observers)
 
     def dettach(self, observer: IObserver):
         """Remove observer from the list of observers."""
         if observer in self.__observers:
             self.__observers.remove(observer)
-            print(self.__observers)
 
     def notify(self, event):
         """Notify all observers of an event."""

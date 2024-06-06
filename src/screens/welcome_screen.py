@@ -75,6 +75,7 @@ class WelcomeScreen(Screen):
         }
 
         response["partner"] = game_data["partner"]
+        response["family_tree"] = game_data["family_tree"]
 
         self.screen_manager.game_data.data = response
         self.screen_manager.current_screen = GameScreen(self.screen_manager, response)

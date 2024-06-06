@@ -48,7 +48,11 @@ class ChildOverlay(Screen):
         self.__agree_button = Button(
             "Crear hijo",
             (self.screen_manager.window.get_width() // 2 - 100, self.screen_manager.window.get_height() // 2 + 50),
-            self.__create_child,
+            lambda: self.__create_child(
+                self.__inputs[0].get_text(), 
+                self.__inputs[1].get_text(),
+                self.__inputs[2].get_text()
+            ),
             bg_color=(0, 122, 204),
             text_color=(255, 255, 255),
             hover_bg_color=(0, 162, 255),

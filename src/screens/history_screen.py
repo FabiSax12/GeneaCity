@@ -1,5 +1,3 @@
-import sys
-from turtle import pos
 import pygame
 from ui.button import Button
 from ui.card import GameCard
@@ -36,6 +34,7 @@ class HistoryScreen(Screen):
             return
 
         self.grid_layout = GridLayout(
+            screen_manager,
             card_width=400, 
             card_height=100, 
             columns=1, 
@@ -45,7 +44,7 @@ class HistoryScreen(Screen):
         self.grid_layout.update_cards(self.screen_manager.window, self.history_data)
 
     def create_game_card(self, window, width, height, x, y, game):
-        return GameCard(window, width, height, x, y, game)
+        return GameCard(self.screen_manager, width, height, x, y, game)
 
     def update(self, *args, **kwargs):
         if "event" in kwargs:
@@ -54,6 +53,7 @@ class HistoryScreen(Screen):
             if event.type == pygame.KEYDOWN:
                 self.grid_layout.handle_keydown(event.key)
 
+            self.grid_layout.handle_events(event)
             self.back_button.handle_event(event)
 
     def draw(self):

@@ -1,5 +1,7 @@
 import pygame
 from abc import ABC, abstractmethod
+from clases.game_data import GameDataManager
+
 
 class ScreenManagerInterface(ABC):
     """Class to manage game screens."""
@@ -54,7 +56,7 @@ class ScreenManagerInterface(ABC):
     
     @property
     @abstractmethod
-    def game_data(self):
+    def game_data(self) -> GameDataManager:
         pass
     
     @property

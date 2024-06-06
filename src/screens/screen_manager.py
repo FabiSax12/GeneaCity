@@ -77,7 +77,6 @@ class ScreenManager(ScreenManagerInterface):
 
     def show_toast(self, message: str, duration: int = 2):
         """Show a toast message."""
-        print("toast")
         self.__toast = Toast(message, self.window.get_width() - 210, self.window.get_height() - 60, 200, 50, duration=duration)
 
     def delete_overlay(self):

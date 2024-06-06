@@ -1,4 +1,6 @@
+from venv import create
 import pygame
+from screens.tree_screen import FamilyTreeScreen
 from .colors import Colors
 from .button import Button
 from abc import ABC, abstractmethod
@@ -110,24 +112,40 @@ class CharacterCard(SelectableCard):
     def character(self):
         return self.__character
 
-class GameCard(Card):
-    def __init__(self, window: pygame.Surface, width: int, height: int, x: int, y: int, game: dict):
-        super().__init__(window, width, height, x, y)
+class GameCard(ActionableCard):
+    def __init__(self, screen_manager: pygame.Surface, width: int, height: int, x: int, y: int, game: dict):
+        super().__init__(screen_manager.window, width, height, x, y)
+        self.__screen_manager = screen_manager
         self.__game = game
-        self.__selected = False
-        self.__name = pygame.font.Font("src/assets/fonts/PressStart2P-Regular.ttf", 10).render(game["name"], True, Colors.BLACK.value)
-        self.__points = pygame.font.Font("src/assets/fonts/PressStart2P-Regular.ttf", 10).render(f"Puntos: {game['score']}", True, Colors.BLACK.value)
+        self.__font = pygame.font.Font("src/assets/fonts/PressStart2P-Regular.ttf", 10)
+        self.__name = self.__font.render(game["name"], True, Colors.BLACK.value)
+        self.__points = self.__font.render(f"Puntos: {game['score']}", True, Colors.BLACK.value)
+        self.__family_tree = FamilyTreeScreen(screen_manager, game["id"])
+        self.action = self.create_family_tree
+
+    def handle_event(self, event: pygame.event.Event):
+        self._action_button.handle_event(event)
 
     def draw(self):
         pygame.draw.rect(self.window, Colors.WHITE.value, self.rect, border_radius=15)
         self.window.blit(self.__name, (self.position[0] + 10, self.position[1] + 10))
         self.window.blit(self.__points, (self.position[0] + 10, self.position[1] + 40))
-    
-    def select(self):
-        self.__selected = True
+        self._action_button.draw(self.window)
 
-    def deselect(self):
-        self.__selected = False
+    def create_family_tree(self):
+        self.__screen_manager.overlay_screen = self.__family_tree
+
+    def _create_action_button(self) -> Button:
+        return Button(
+            text="Ver árbol",
+            position=(self.position[0] + 10, self.position[1] + 70),
+            on_click=self.create_family_tree,
+            size=(self.width // 3, 20),
+            font_size=25,
+            bg_color=Colors.RED.value,
+            hover_bg_color=Colors.DARK_PINK.value,
+            border_radius=5
+        )
     
     @property
     def game(self):
@@ -184,7 +202,6 @@ class ResidentCard(ActionableCard):
 
     def _create_action_button(self) -> Button:
         if self.__player["partner"] == self.__resident["id"]:
-            print("Es tu pareja")
             return Button(
                 text="Tener hijo",
                 position=(self.position[0] + self.width // 12, self.height // 4 * 3 - 10 + self.position[1]),
