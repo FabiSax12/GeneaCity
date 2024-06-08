@@ -1,0 +1,9 @@
+Include
+Lib
+Scripts
+pyvenv.cfg
+requirements.txt
+__pycache__
+todo.md
+.json
+GeneaCity.rar
