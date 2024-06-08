@@ -1,3 +1,4 @@
+import json
 import pygame
 from clases.tree import CharacterNode, FamilyTree
 from visuals.sprite import Sprite
@@ -8,15 +9,15 @@ from ui.residents_display import ResidentsOverlay
 class Player(Person):
     def __init__(self, person_info: dict, screen_manager: ScreenManagerInterface):
         super().__init__(person_info)
-        self.__family_tree = FamilyTree(person_info)
+        self.__screen_manager = screen_manager
         self.__score = 0
         self.__position = pygame.Vector2(person_info["position"]["x"], person_info["position"]["y"])
         self.__sprite = Sprite(self.__position, self.info["gender"], self.info["id"])
-        self.__screen_manager = screen_manager
 
         person_info["score"] = self.__score
         self.__screen_manager.game_data.data = person_info
         self.__screen_manager.game_data.save()
+        self.__family_tree = FamilyTree(self.__screen_manager.game_data.data)
 
     def draw(self, map_surface: pygame.Surface):
         """Draw the player on the map.
@@ -98,36 +99,26 @@ class Player(Person):
                 self.__screen_manager.overlay_screen = residents_display
 
                 for resident in residents:
-                    print(resident)
                     character = self.__family_tree.get_node(resident["id"])
 
                     if character is None:
-                        father = self.__family_tree.get_node(resident["father"])
-                        if father: father.children.append(CharacterNode(resident))
+                        if resident["father"] == self.father and resident["mother"] == self.mother:
+                            self.__family_tree.add_member(resident, "sibling", self.__family_tree.root.id, self.__screen_manager.game_data)
 
-                        mother = self.__family_tree.get_node(resident["mother"])
-                        if mother: mother.children.append(CharacterNode(resident))
-
-                        self.__score += 10
+                        elif resident["father"] == self.id or resident["mother"] == self.id:
+                            self.__family_tree.add_member(resident, "child", self.__family_tree.root.id, self.__screen_manager.game_data)
+                        
                         continue
-                    
-                    if character.father is None:
-                        character.father = {
-                            "id": resident["father"],
-                            "name": self.__screen_manager.api.get_inhabitant_information(resident["father"])["name"],
-                            "father": None,
-                            "mother": None
-                        }
-                        self.__score += 10
 
-                    if character.mother is None:
-                        character.mother = {
-                            "id": resident["mother"],
-                            "name": self.__screen_manager.api.get_inhabitant_information(resident["mother"])["name"],
-                            "father": None,
-                            "mother": None
-                        }
-                        self.__score += 10
+                    # If the character's father is known and not already in the tree, add it
+                    if resident["father"] is not None and not character.father:
+                        father_info = self.__screen_manager.api.get_inhabitant_information(resident["father"])
+                        self.__family_tree.add_member(father_info, "father", resident["id"], self.__screen_manager.game_data)
+                    
+                    # If the character's mother is known and not already in the tree, add it
+                    if resident["mother"] is not None and not character.mother:
+                        mother_info = self.__screen_manager.api.get_inhabitant_information(resident["mother"])
+                        self.__family_tree.add_member(mother_info, "mother", resident["id"], self.__screen_manager.game_data)
 
     def __save_position(self):
         """Save the player's position to the game data."""
@@ -135,24 +126,15 @@ class Player(Person):
             "x": int(self.__position.x),
             "y": int(self.__position.y)
         }
+        self.__screen_manager.game_data.save()
 
-    def add_family_member(self, member: dict, relation: str, id: int):
-        """Add a family member to the family tree.
-
-        Args:
-            member (dict): family member information
-        """
-        self.__family_tree.add_member(member, relation, id)
-
-    def search_kinship(self, id: int):
-        """Search for kinship in the family tree.
-
-        Args:
-            id (int): id of the family member to search for
-        """
-        return self.__family_tree.search_kinship(id)
+    def find_id_in_family_tree(self, target_id) -> dict:
+        """Find an ID in the family tree."""
+        return self.__family_tree.get_node(target_id)
     
-    
+    def _update_family_tree(self):
+        """Update the family tree in the game data."""
+        self.__family_tree._update_game_data(self.__screen_manager.game_data.data)
 
     # Properties
     @property

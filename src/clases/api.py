@@ -187,7 +187,7 @@ class Api(ApiInterface):
         if response["status"] == 0 and response["error"]:
             raise ValueError(response["error"])
 
-        return response["childId"]
+        return response
 
     # Properties
 

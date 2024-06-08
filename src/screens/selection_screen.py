@@ -21,7 +21,7 @@ class SelectionScreen(Screen):
         return CharacterCard(window, width, height, x, y, character)
 
     def load_characters(self):
-        self.screen_manager.api.get_available_inhabitants((10000, 10000), self.update_cards)
+        self.screen_manager.api.get_available_inhabitants((1000, 1000), self.update_cards)
 
     def update_cards(self, characters: List[Dict]):
         self.characters = characters
@@ -33,9 +33,38 @@ class SelectionScreen(Screen):
             response = self.screen_manager.api.select_available_inhabitant(character_id)
             
             if response:
-                self.selected_character = self.screen_manager.api.get_inhabitant_information(character_id)
+                character_info = self.screen_manager.api.get_inhabitant_information(character_id)
+                father = self.screen_manager.api.get_inhabitant_information(character_info["father"])
+                mother = self.screen_manager.api.get_inhabitant_information(character_info["mother"])
 
-            return response
+                character_info["family_tree"] = {
+                    "id": character_info["id"],
+                    "name": character_info["name"],
+                    "father": {
+                        "id": father["id"],
+                        "name": father["name"],
+                        "father": None,
+                        "mother": None,
+                        "children": [],
+                        "siblings": []
+                    },
+                    "mother": {
+                        "id": mother["id"],
+                        "name": mother["name"],
+                        "father": None,
+                        "mother": None,
+                        "children": [],
+                        "siblings": []
+                    },
+                    "children": [],
+                    "siblings": []
+                }
+
+                self.selected_character = character_info
+                return True
+            
+            return False
+
 
     def handle_keydown(self, key: int):
         self.grid_layout.handle_keydown(key)

@@ -15,9 +15,8 @@ class FamilyTreeScreen(Screen):
         self.__family_tree = FamilyTree(list(filter(lambda x: x["id"] == id, self.__games))[0])
         self.__offset_x = 0
         self.__offset_y = -500
-        self.__node_height = 80
+        self.__node_height = 130
         self.__node_radius = 30
-        print(self.__family_tree.root)
 
     def draw(self):
         """Draw the family tree."""
@@ -108,6 +107,19 @@ class FamilyTreeScreen(Screen):
             )
 
             self.draw_tree(child, child_x - child_spacing // 2, child_x + child_spacing // 2, child_y)
+
+        # Draw siblings
+        sibling_y = y
+        sibling_spacing = 60 # (xmax - xmin) // (len(character.siblings) + 1)
+        inicial_x = x - self.__node_radius * 2
+
+        for i, sibling in enumerate(character.siblings):
+            # sibling_x = inicial_x + (xmin + (i) * sibling_spacing)
+            # sibling_x *= -1 if i % 2 == 0 else 1
+            # sibling_x += inicial_x + 400 - self.__node_radius * 2 if i % 2 == 0 else 0
+            sibling_x = x + ((i + 1) * sibling_spacing) * ( -1 if i % 2 == 0 else 1 ) - self.__node_radius
+
+            self.draw_tree(sibling, sibling_x, sibling_x, sibling_y)
 
     def calculate_circle_border(self, x_c, y_c, x_f, y_f, r):
         # Calculate the angle between the center of the circle and the point
