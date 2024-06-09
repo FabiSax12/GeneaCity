@@ -25,7 +25,7 @@ class Colors(Enum):
     LIGHT_PURPLE = (229, 128, 255)
     LIGHT_PINK = (255, 182, 193)
     LIGHT_BROWN = (205, 133, 63)
-    DARK_BLUE = (0, 0, 139)
+    DARK_BLUE = (0, 0, 60)
     DARK_GREEN = (0, 100, 0)
     DARK_YELLOW = (139, 139, 0)
     DARK_CYAN = (0, 139, 139)

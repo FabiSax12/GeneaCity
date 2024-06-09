@@ -18,10 +18,12 @@ class FamilyTreeScreen(Screen):
         self.__node_height = 130
         self.__node_radius = 30
         self.__node_distance = 200
+        self.background_image, self.background_image_rect = self.screen_manager.image_handler.load_and_prepare_background("src/assets/images/tree_background.webp", screen_manager.window.get_width(), screen_manager.window.get_height(), alpha=100)
 
     def draw(self):
         """Draw the family tree."""
-        self.screen_manager.window.fill(Colors.WHITE.value)
+        self.screen_manager.window.fill(Colors.BLACK.value)
+        self.screen_manager.window.blit(self.background_image, self.background_image_rect)
         self.draw_tree(self.__family_tree.root, 0, self.screen_manager.window.get_width() * 1.5 , 100)
     
     def update(self, *args, **kwargs):
@@ -47,8 +49,8 @@ class FamilyTreeScreen(Screen):
             print(character)
             
         x = xmin + (xmax - xmin) // 2
-        pygame.draw.circle(self.screen_manager.window, Colors.DARK_GREEN.value, (x - self.__offset_x, y - self.__offset_y), self.__node_radius)
-        text = self.__font.render(character.name.split(" ")[0], True, Colors.WHITE.value)
+        pygame.draw.circle(self.screen_manager.window, Colors.GRAY.value, (x - self.__offset_x, y - self.__offset_y), self.__node_radius)
+        text = self.__font.render(character.name.split(" ")[0], True, Colors.DARK_BLUE.value)
         self.screen_manager.window.blit(text, (x - text.get_width() / 2 - self.__offset_x, y- text.get_height() / 2 - self.__offset_y))
         
         father_x = xmin + (x - xmin) // 2
@@ -64,7 +66,7 @@ class FamilyTreeScreen(Screen):
 
             pygame.draw.line(
                 self.screen_manager.window,
-                Colors.BROWN.value, 
+                Colors.DARK_CYAN.value, 
                 self.calculate_circle_border(
                     inicial_point[0], inicial_point[1], 
                     final_point[0], final_point[1], 
@@ -82,7 +84,7 @@ class FamilyTreeScreen(Screen):
 
             pygame.draw.line(
                 self.screen_manager.window,
-                Colors.BROWN.value, 
+                Colors.DARK_CYAN.value, 
                 self.calculate_circle_border(
                     inicial_point[0], inicial_point[1], 
                     final_point[0], final_point[1], 
@@ -103,7 +105,7 @@ class FamilyTreeScreen(Screen):
 
             pygame.draw.line(
                 self.screen_manager.window,
-                Colors.BROWN.value, 
+                Colors.DARK_CYAN.value, 
                 self.calculate_circle_border(
                     inicial_point[0], inicial_point[1], 
                     final_point[0], final_point[1], 

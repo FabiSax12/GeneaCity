@@ -41,10 +41,13 @@ class ImageHandler:
         return image, image_rect
 
     @staticmethod
-    def load_and_prepare_background(path: str, target_width: int, target_height: int) -> Tuple[pygame.Surface, pygame.Rect]:
+    def load_and_prepare_background(path: str, target_width: int, target_height: int, **kargs) -> Tuple[pygame.Surface, pygame.Rect]:
         """Load an image from a file, scale and crop it to the target size, and get its rectangle."""
         image = ImageHandler.load_image(path)
         image = ImageHandler.scale_image(image, target_width, target_height)
         image = ImageHandler.crop_center(image, target_width, target_height)
+
+        if "alpha" in kargs: image.set_alpha(kargs["alpha"])
+
         image_rect = image.get_rect()
         return image, image_rect
