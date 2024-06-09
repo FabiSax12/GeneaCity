@@ -54,23 +54,27 @@ class Api(ApiInterface):
         Returns:
             list[Resident]: list of residents in the house
         """
-        response = requests.get(f"{self.__url}/getHousesResidents/?houseId={house_id}").json()
+        try:
+            response = requests.get(f"{self.__url}/getHousesResidents/?houseId={house_id}", timeout=4).json()
 
-        if not "residents" in response:
-            return []
+            if not "residents" in response:
+                return []
 
-        for i, resident in enumerate(response["residents"]):
-            resident_info = self.get_inhabitant_information(resident["id"])
+            for i, resident in enumerate(response["residents"]):
+                resident_info = self.get_inhabitant_information(resident["id"])
 
-            response["residents"][i]["id"] = int(resident["id"])
-            response["residents"][i]["age"] = int(resident_info["age"])
-            response["residents"][i]["father"] = int(resident["father"])
-            response["residents"][i]["mother"] = int(resident["mother"])
+                response["residents"][i]["id"] = int(resident["id"])
+                response["residents"][i]["age"] = int(resident_info["age"])
+                response["residents"][i]["father"] = int(resident["father"])
+                response["residents"][i]["mother"] = int(resident["mother"])
 
-        if response["status"] == 1:
-            return response["residents"]
-        else:
-            return []
+            if response["status"] == 1:
+                return response["residents"]
+            else:
+                return []
+        except requests.Timeout:
+            print("Timeout")
+            return self.get_house_residents(house_id)
 
     def get_available_inhabitants(self, pos: Tuple[int, int], callback: Callable) -> List[AvailableInhabitant]:
         """Get the available inhabitants in a specific position.

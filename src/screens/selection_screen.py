@@ -47,6 +47,7 @@ class SelectionScreen(Screen):
                 father = self.screen_manager.api.get_inhabitant_information(character_info["father"])
                 mother = self.screen_manager.api.get_inhabitant_information(character_info["mother"])
 
+                character_info["score"] = 0
                 character_info["family_tree"] = {
                     "id": character_info["id"],
                     "name": character_info["name"],

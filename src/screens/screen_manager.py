@@ -109,6 +109,7 @@ class ScreenManager(ScreenManagerInterface):
     @overlay_screen.setter
     def overlay_screen(self, screen: Screen):
         """Set the overlay screen."""
+        print("overlay_screen", screen)
         self.__overlay_screen = screen
         self.__event_handler.attach(screen)
 

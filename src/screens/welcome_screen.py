@@ -79,6 +79,7 @@ class WelcomeScreen(Screen):
             "y": game_data["position"]["y"]
         }
 
+        response["score"] = game_data["score"]
         response["partner"] = game_data["partner"]
         response["family_tree"] = game_data["family_tree"]
 
