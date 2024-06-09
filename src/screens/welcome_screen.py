@@ -1,5 +1,6 @@
 import sys
 import pygame
+from screens.death_screen import DeathScreen
 from ui.button import Button
 from ui.colors import Colors
 from screens.screen import Screen
@@ -68,6 +69,10 @@ class WelcomeScreen(Screen):
         if game_data is None: return
 
         response = self.screen_manager.api.get_inhabitant_information(game_data["id"])
+
+        if response["alive"] == "Dead":
+            self.screen_manager.current_screen = DeathScreen(self.screen_manager)
+            return
 
         response["position"] = {
             "x": game_data["position"]["x"],

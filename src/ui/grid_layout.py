@@ -22,7 +22,6 @@ class GridLayout:
         try:
             length = len(self.cards)
             for i, item in enumerate(data):
-                i += length
 
                 self.cards.append(
                     self.card_factory(
@@ -97,7 +96,8 @@ class GridLayout:
         for card in self.cards:
             card.position = (card.position[0], card.position[1] - dy)
             if issubclass(self.card_type, ActionableCard):
-                card._action_button.position = (card._action_button.position[0], card._action_button.position[1] - dy)
+                card._action_button.move((card._action_button.position[0], card._action_button.position[1] - dy))
+                
 
     def draw(self, window):
         start_index = self.cards_scroll * self.columns

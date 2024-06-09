@@ -52,11 +52,6 @@ class Button:
         Args:
             screen (pygame.Surface): The screen to draw the button on.
         """
-        
-        self.rect = pygame.Rect(self.position, self.size)
-        self.text_surface = self.font.render(self.text, True, self.text_color)
-        self.text_rect = self.text_surface.get_rect(center=self.rect.center)
-
         bg_color = self.hovered and self.hover_bg_color or self.bg_color
         pygame.draw.rect(screen, bg_color, self.rect, border_radius=self.border_radius)
         
@@ -68,3 +63,16 @@ class Button:
         screen.blit(shadow_surface, shadow_rect.topleft)
         
         screen.blit(self.text_surface, self.text_rect)
+
+    def move(self, position):
+        """
+        Move the button to a new position.
+        
+        Args:
+            x (int): The new x position.
+            y (int): The new y position.
+        """
+        self.position = position
+        self.rect = pygame.Rect(self.position, self.size)
+        self.text_surface = self.font.render(self.text, True, self.text_color)
+        self.text_rect = self.text_surface.get_rect(center=self.rect.center)

@@ -162,5 +162,4 @@ class Player(Person):
         Args:
             score (int): player's score
         """
-        print(f"Score: {score}")
         self.__score = score
