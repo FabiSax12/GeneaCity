@@ -62,7 +62,7 @@ class GameScreen(Screen):
 
     def check_map_update(self):
         """Check if the map needs to be updated with new houses."""
-        if abs(self.__dx_counter) >= self.screen_manager.window.get_height() // 2 or abs(self.__dy_counter) >= self.screen_manager.window.get_height() // 2:
+        if abs(self.__dx_counter) >= self.screen_manager.window.get_height() // 4 or abs(self.__dy_counter) >= self.screen_manager.window.get_height() // 4:
             self.update_houses()
             self.__dx_counter = 0
             self.__dy_counter = 0

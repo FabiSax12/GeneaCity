@@ -1,5 +1,6 @@
 import pygame
 from screens.instructions_screen import InstructionsScreen
+from ui.button import Button
 from ui.colors import Colors
 from typing import List, Dict
 from ui.card import CharacterCard
@@ -16,15 +17,24 @@ class SelectionScreen(Screen):
         self.grid_layout = GridLayout(screen_manager, 150, 100, 4, self.create_character_card, position=(85, 100), scroll_trigger=3)
         self.load_characters()
         self.selected_character = None
+        self.back_button = Button(
+            text="Volver",
+            position=(self.screen_manager.window.get_width() // 2 - 50, 700),
+            size=(100, 50),
+            on_click=self.screen_manager.back
+        )
 
     def create_character_card(self, window, width, height, x, y, character):
         return CharacterCard(window, width, height, x, y, character)
 
     def load_characters(self):
-        self.screen_manager.api.get_available_inhabitants((1000, 1000), self.update_cards)
+        self.screen_manager.api.get_available_inhabitants((5000, 5000), self.update_cards)
+        # self.screen_manager.api.get_available_inhabitants((70000, 70000), self.update_cards)
+        # self.screen_manager.api.get_available_inhabitants((30000, 30000), self.update_cards)
+        # self.screen_manager.api.get_available_inhabitants((90000, 90000), self.update_cards)
 
     def update_cards(self, characters: List[Dict]):
-        self.characters = characters
+        self.characters.extend(characters)
         self.grid_layout.update_cards(self.screen_manager.window, characters)
 
     def select_character(self):
@@ -81,7 +91,10 @@ class SelectionScreen(Screen):
             if event.type == pygame.KEYDOWN:
                 self.handle_keydown(event.key)
 
+            self.back_button.handle_event(event)
+
     def draw(self):
         self.screen_manager.window.fill(Colors.WHITE.value)
         self.screen_manager.window.blit(self.title_text, (self.screen_manager.window.get_width() // 2 - self.title_text.get_width() // 2, 50))
         self.grid_layout.draw(self.screen_manager.window)
+        self.back_button.draw(self.screen_manager.window)

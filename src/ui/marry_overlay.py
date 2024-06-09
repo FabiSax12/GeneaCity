@@ -47,6 +47,12 @@ class MarryOverlay(Screen):
             lambda: self.__marry(couple["id"], self.__inputs[0].get_text(), self.__inputs[1].get_text(), self.__handle_marry_error)
         )
 
+        self.__close_button = Button(
+            "Cerrar",
+            (self.screen_manager.window.get_width() // 2 + 10, self.screen_manager.window.get_height() // 2 - 25),
+            self.screen_manager.back
+        )
+
     def update(self, *args, **kwargs):
         if "event" in kwargs:
             event = kwargs["event"]

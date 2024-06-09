@@ -3,6 +3,7 @@ from ui.button import Button
 from ui.card import ResidentCard
 from screens.screen import Screen
 from ui.child_overlay import ChildOverlay
+from ui.colors import Colors
 from ui.grid_layout import GridLayout
 from interfaces.screen_manager import ScreenManagerInterface
 from ui.marry_overlay import MarryOverlay
@@ -107,6 +108,8 @@ class ResidentsOverlay(Screen):
             self.screen_manager.game_data.data["marital_status"] = "Married"
             # self.screen_manager.game_data.data["house"] = response["houseId"]
             self.screen_manager.game_data.save()
+            del self.screen_manager.overlay_screen
+            self.screen_manager.show_toast("Matrimonio exitoso.", 3, bg_color=Colors.GREEN.value)
 
             return response
         

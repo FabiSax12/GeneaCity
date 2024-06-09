@@ -34,13 +34,6 @@ class ScreenManager(ScreenManagerInterface):
         self.__req_timer = 0
         self.__game_mode: str = None
 
-    # def handle_events(self, events: list[pygame.event.Event]):
-    #     """Handle pygame events."""
-    #     if self.__overlay_screen:
-    #         self.__overlay_screen.handle_events(events)
-    #     elif self.__current_screen:
-    #         self.__current_screen.handle_events(events)
-
     def update(self):
         """Update the screen manager."""
         self.__dt = self.__clock.tick(100) / 1000.0
@@ -75,13 +68,20 @@ class ScreenManager(ScreenManagerInterface):
         """Handle the response from the get_houses API call."""
         pass
 
-    def show_toast(self, message: str, duration: int = 2):
+    def show_toast(self, message: str, duration: int = 2, *args, **kwargs):
         """Show a toast message."""
-        self.__toast = Toast(message, self.window.get_width() - 210, self.window.get_height() - 60, 200, 50, duration=duration)
+        self.__toast = Toast(message, self.window.get_width() - 210, self.window.get_height() - 60, 200, 50, duration=duration, *args, **kwargs)
 
     def delete_overlay(self):
         """Delete the overlay screen."""
         del self.overlay_screen
+
+    def back(self):
+        """Go back to the previous screen."""
+        if self.overlay_screen:
+            self.delete_overlay()
+        else:
+            self.current_screen = self.previous_screen
 
     @property
     def current_screen(self):

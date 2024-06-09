@@ -20,21 +20,28 @@ class GridLayout:
 
     def update_cards(self, window, data: List[Dict]):
         try:
-            self.cards = [
-                self.card_factory(
-                    window,
-                    self.card_width,
-                    self.card_height,
-                    self.position[0] + self.card_width * (i % self.columns) + self.margin_x * (i % self.columns),
-                    self.position[1] + self.card_height * (i // self.columns) + self.margin_y * (i // self.columns),
-                    item
-                ) for i, item in enumerate(data)
-            ]
+            length = len(self.cards)
+            print(length)
+            for i, item in enumerate(data):
+                i += length
+
+                self.cards.append(
+                    self.card_factory(
+                        window,
+                        self.card_width,
+                        self.card_height,
+                        self.position[0] + self.card_width * (i % self.columns) + self.margin_x * (i % self.columns),
+                        self.position[1] + self.card_height * (i // self.columns) + self.margin_y * (i // self.columns),
+                        item
+                    )
+                )
 
             self.card_type = type(self.cards[0])
 
             if self.cards and issubclass(self.card_type, SelectableCard):
                 self.cards[0].select()
+
+            print(len(self.cards))
         except IndexError:
             pass
 
