@@ -128,7 +128,6 @@ class ResidentsOverlay(Screen):
             )
 
             if response["childId"]:
-                print(self.screen_manager.game_data.data)
                 self.screen_manager.show_toast("Hijo creado exitosamente.", 3)
                 self.screen_manager.game_data.data["family_tree"]["children"].append({"id": response["childId"], "name": name})
                 self.screen_manager.game_data.save()

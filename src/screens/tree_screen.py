@@ -10,18 +10,19 @@ class FamilyTreeScreen(Screen):
     def __init__(self, screen_manager, id: int):
         """Create a new instance of the FamilyTreeScreen class."""
         super().__init__(screen_manager)
-        self.__font = pygame.font.Font(None, 20)
+        self.__font = pygame.font.Font(None, 15)
         self.__games = self.screen_manager.game_data.load()
         self.__family_tree = FamilyTree(list(filter(lambda x: x["id"] == id, self.__games))[0])
-        self.__offset_x = 0
+        self.__offset_x = 200
         self.__offset_y = -500
         self.__node_height = 130
         self.__node_radius = 30
+        self.__node_distance = 200
 
     def draw(self):
         """Draw the family tree."""
         self.screen_manager.window.fill(Colors.WHITE.value)
-        self.draw_tree(self.__family_tree.root, 0, self.screen_manager.window.get_width(), 100)
+        self.draw_tree(self.__family_tree.root, 0, self.screen_manager.window.get_width() * 1.5 , 100)
     
     def update(self, *args, **kwargs):
         """Update the family tree screen."""
@@ -47,11 +48,17 @@ class FamilyTreeScreen(Screen):
             
         x = xmin + (xmax - xmin) // 2
         pygame.draw.circle(self.screen_manager.window, Colors.DARK_GREEN.value, (x - self.__offset_x, y - self.__offset_y), self.__node_radius)
-        text = self.__font.render(character.name, True, Colors.WHITE.value)
+        text = self.__font.render(character.name.split(" ")[0], True, Colors.WHITE.value)
         self.screen_manager.window.blit(text, (x - text.get_width() / 2 - self.__offset_x, y- text.get_height() / 2 - self.__offset_y))
         
+        father_x = xmin + (x - xmin) // 2
+        mother_x = x + (xmax - x) // 2
+
+        # if mother_x - father_x < 200:
+        #     father_x -= 100
+        #     mother_x += 100
+
         if character.father:
-            father_x = xmin + (x - xmin) // 2
             inicial_point = (x - self.__offset_x, y - self.__offset_y)
             final_point = (father_x - self.__offset_x, y - self.__node_height - self.__offset_y)
 
@@ -69,7 +76,7 @@ class FamilyTreeScreen(Screen):
             self.draw_tree(character.father, xmin, x, y - self.__node_height)
         
         if character.mother:
-            mother_x = x + (xmax - x) // 2
+            
             inicial_point = (x - self.__offset_x, y - self.__offset_y)
             final_point = (mother_x - self.__offset_x, y - self.__node_height - self.__offset_y)
 

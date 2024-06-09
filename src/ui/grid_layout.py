@@ -21,7 +21,6 @@ class GridLayout:
     def update_cards(self, window, data: List[Dict]):
         try:
             length = len(self.cards)
-            print(length)
             for i, item in enumerate(data):
                 i += length
 
@@ -41,7 +40,6 @@ class GridLayout:
             if self.cards and issubclass(self.card_type, SelectableCard):
                 self.cards[0].select()
 
-            print(len(self.cards))
         except IndexError:
             pass
 

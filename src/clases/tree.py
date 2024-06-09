@@ -62,7 +62,7 @@ class FamilyTree:
         return cls(player_data)
 
     def add_member(self, member: dict, relation: str, id: int, game_data: GameDataManager):
-        node = self.get_node(id)
+        node, level = self.get_node(id)
         member_node = CharacterNode(member)
 
         if relation == "father":
@@ -83,29 +83,34 @@ class FamilyTree:
         game_data.data["family_tree"] = self.to_dict()
         game_data.save()
 
-    def get_node(self, id: int) -> CharacterNode:
-        return self._get_node(id, self.root)
+    def get_node(self, id: int) -> tuple[CharacterNode,  int]:
+        return self._get_node(id, self.root, 0)
 
-    def _get_node(self, id: int, node: CharacterNode) -> CharacterNode:
+    def _get_node(self, id: int, node: CharacterNode, level: int) -> tuple[CharacterNode,  int]:
         if node.id == id:
-            return node
+            return node, level
         
         if node.father:
-            father = self._get_node(id, node.father)
+            father, lvl = self._get_node(id, node.father, level + 1)
             if father:
-                return father
+                return father, lvl
             
         if node.mother:
-            mother = self._get_node(id, node.mother)
+            mother, lvl = self._get_node(id, node.mother, level + 1)
             if mother:
-                return mother
+                return mother, lvl
         
         for child in node.children:
-            result = self._get_node(id, child)
+            result, lvl = self._get_node(id, child, level + 1)
             if result:
-                return result
+                return result, lvl
+            
+        for sibling in node.siblings:
+            result, lvl = self._get_node(id, sibling, level + 1)
+            if result:
+                return result, lvl
 
-        return None
+        return None, 0
 
 
         
