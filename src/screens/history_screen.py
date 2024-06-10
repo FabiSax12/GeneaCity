@@ -42,6 +42,7 @@ class HistoryScreen(Screen):
             position=(screen_manager.window.get_width() // 2 - 200, 200)
         )
         self.grid_layout.update_cards(self.screen_manager.window, self.history_data)
+        print(self.grid_layout)
 
     def create_game_card(self, window, width, height, x, y, game):
         return GameCard(self.screen_manager, width, height, x, y, game)
@@ -53,7 +54,9 @@ class HistoryScreen(Screen):
             if event.type == pygame.KEYDOWN:
                 self.grid_layout.handle_keydown(event.key)
 
-            self.grid_layout.handle_events(event)
+            if self.history_data:
+                self.grid_layout.handle_events(event)
+
             self.back_button.handle_event(event)
 
     def draw(self):
